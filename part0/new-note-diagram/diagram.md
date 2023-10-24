@@ -34,6 +34,7 @@ sequenceDiagram
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp.data.json
     activate server
     server-->>browser: data.json 
+
     note left of server: data: [ { "content": "...", "date": "..."}, ... ]
     deactivate server
 

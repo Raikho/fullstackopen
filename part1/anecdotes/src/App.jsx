@@ -3,6 +3,14 @@ import './App'
 
 const randInt = (max) => Math.floor(Math.random() * max)
 
+const Display = ({ title, anecdote, votes }) => (
+  <>
+    <h1>{title}</h1>
+    <div>{anecdote}</div>
+    <div>{votes}</div>
+  </>
+)
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -16,24 +24,39 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(randInt(anecdotes.length))
+  const [highest, setHighest] = useState(0);
   const [votes, setVotes] = useState(anecdotes.map(() => 0))
 
   const handleNext = () => {
     setSelected(randInt(anecdotes.length));
   }
+  
   const handleVote = () => {
     let newVotes = [...votes];
     newVotes[selected]++;
-    setVotes(newVotes)
+    setVotes(newVotes);
+
+    let currVotes = newVotes[selected];
+    if (currVotes > votes[highest])
+      setHighest(selected);
   }
 
   return (
     <>
-      <div>{anecdotes[selected]}</div>
-      <div>has {votes[selected]} votes</div>
+      <Display 
+        title='Anecdote of the day'
+        anecdote={anecdotes[selected]} 
+        votes={votes[selected]}
+      />
+
       <button onClick={handleVote}>vote</button>
       <button onClick={handleNext}>next anecdote</button>
-      <div>votes: {votes}</div>
+
+      <Display 
+        title='Anecdote with most votes'
+        anecdote={anecdotes[highest]} 
+        votes={votes[highest]}
+      />
     </>
   )
 }

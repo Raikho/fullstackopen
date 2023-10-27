@@ -13,8 +13,10 @@ const App = () => {
 
   const addNote = event => {
     event.preventDefault();
-    if (newName === '' || persons.map(person => person.name).includes(newName))
-      return;
+    if (newName === '') return;
+
+    if (persons.map(person => person.name).includes(newName))
+      return alert(`${newName} is already added to phonebook`);
 
     const newPersons = [...persons];
     newPersons.push({ name: newName })

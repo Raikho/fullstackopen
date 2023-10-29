@@ -14,6 +14,10 @@ const App = () => {
     personService
       .getAll()
       .then(data => setPersons(data))
+      .catch(err => {
+        console.log(err)
+        alert('error: phonebook database was not able to be retreived')
+      })
   }, [])
 
   const handleChangeName = event => {
@@ -48,6 +52,10 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       })
+      .catch(err => {
+        console.log(err)
+        alert(`${newName} was not able to be added to the database`)
+      })
   }
 
   const editNumber = () => {
@@ -61,6 +69,10 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       })
+      .catch(err => {
+        console.log(err)
+        alert(`${newName} was not found in the databse`)
+      })
   }
 
   const deletePerson = id => {
@@ -72,6 +84,10 @@ const App = () => {
       .then(() => {
         const newPersons = [...persons].filter(person => person.id !== id)
         setPersons(newPersons)
+      })
+      .catch(err => {
+        console.log(err)
+        alert(`${name} was already deleted from the server`)
       })
   }
 

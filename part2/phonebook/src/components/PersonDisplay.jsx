@@ -2,7 +2,7 @@ const PersonDisplay = ({ persons, handleDelete }) => (
 	<table>
 		<tbody>
 			{persons.map(person => (
-				<tr key={person.name}>
+				<tr className='person' key={person.name}>
 					<td>{person.name}</td>
 					<td>{person.number}</td>
 					<td>

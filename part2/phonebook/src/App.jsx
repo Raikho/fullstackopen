@@ -3,21 +3,24 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import PersonDisplay from './components/PersonDisplay'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState({ status: 'clear', text: '' })
 
   useEffect(() => {
     personService
       .getAll()
       .then(data => setPersons(data))
       .catch(err => {
-        console.log(err)
-        alert('error: phonebook database was not able to be retreived')
-      })
+        console.log(err) // debug
+        setMessage({status: 'error', text: 'Phonebook database was not able to be retreived'})
+        setTimeout(() => setMessage({status: 'clear', text: ''}), 3000)
+    })
   }, [])
 
   const handleChangeName = event => {
@@ -32,6 +35,13 @@ const App = () => {
   const handleChangeFilter = event => {
     console.log('filter: ', event.target.value); //debug
     setNewFilter(event.target.value);
+  }
+
+  const clearInputs = () => {setNewName(''); setNewNumber('');}
+
+  const addTempNotice = (state, text) => {
+    setMessage({status: state, text: text});
+    setTimeout(() => setMessage({status: 'clear', text: ''}), 3000)
   }
 
   const addPerson = event => {
@@ -49,12 +59,12 @@ const App = () => {
       .create(personObject)
       .then(data => {
         setPersons(persons.concat(data));
-        setNewName('');
-        setNewNumber('');
+        addTempNotice('success', `Added ${newName}`)
+        clearInputs();
       })
       .catch(err => {
-        console.log(err)
-        alert(`${newName} was not able to be added to the database`)
+        console.log(err) // debug
+        addTempNotice('error', `${newName} was not able to be added to the database`)
       })
   }
 
@@ -66,12 +76,12 @@ const App = () => {
       .update(personObject, id)
       .then(data => {
         setPersons(persons.map(p => p.id === id ? data : p))
-        setNewName('');
-        setNewNumber('');
+        addTempNotice('success', `Changed ${newName}'s number`)
+        clearInputs();
       })
       .catch(err => {
-        console.log(err)
-        alert(`${newName} was not found in the databse`)
+        console.log(err) // debug
+        addTempNotice('error', `${newName} was not found in the database`)
       })
   }
 
@@ -84,10 +94,11 @@ const App = () => {
       .then(() => {
         const newPersons = [...persons].filter(person => person.id !== id)
         setPersons(newPersons)
+        addTempNotice('success', `Deleted ${name}`);
       })
       .catch(err => {
-        console.log(err)
-        alert(`${name} was already deleted from the server`)
+        console.log(err) // debug
+        addTempNotice('error', `${name} was already deleted from the database`)
       })
   }
 
@@ -98,6 +109,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
+
       <Filter 
         handleChangeFilter={handleChangeFilter} 
         newFilter={newFilter} 

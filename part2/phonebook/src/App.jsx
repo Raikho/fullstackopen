@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import PersonDisplay from './components/PersonDisplay'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,13 +12,9 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    console.log('effect');
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => {
-        console.log('data: ', res.data); // debug
-        setPersons(res.data);
-      });
+    personService
+      .getAll()
+      .then(data => setPersons(data))
   }, [])
 
   const handleChangeName = event => {
@@ -41,24 +38,14 @@ const App = () => {
     if (persons.map(person => person.name).includes(newName))
       return alert(`${newName} is already added to phonebook`);
 
-    // const newPersons = [...persons];
-    // newPersons.push({ name: newName, number: newNumber })
-    // setPersons(newPersons);
-
-    const personObject = {
-      name: newName,
-      number: newNumber,
-    };
-
-    axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(res => {
-        console.log(res);
-        setPersons(persons.concat(res.data));
+    const personObject = {name: newName, number: newNumber};
+    personService
+      .create(personObject)
+      .then(data => {
+        setPersons(persons.concat(data));
         setNewName('');
         setNewNumber('');
       })
-
   }
 
   const personsToShow = (newFilter === '')

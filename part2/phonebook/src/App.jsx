@@ -64,7 +64,7 @@ const App = () => {
       })
       .catch(err => {
         console.log(err) // debug
-        addTempNotice('error', `${newName} was not able to be added to the database`)
+        addTempNotice('error', `${newName} was not able to be added to the server`)
       })
   }
 
@@ -81,7 +81,7 @@ const App = () => {
       })
       .catch(err => {
         console.log(err) // debug
-        addTempNotice('error', `${newName} was not found in the database`)
+        addTempNotice('error', `Information of ${newName} was not found in the server`)
       })
   }
 
@@ -98,7 +98,7 @@ const App = () => {
       })
       .catch(err => {
         console.log(err) // debug
-        addTempNotice('error', `${name} was already deleted from the database`)
+        addTempNotice('error', `Information of ${name} has already been removed from the server`)
       })
   }
 

@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -48,6 +47,18 @@ const App = () => {
       })
   }
 
+  const deletePerson = id => {
+    const name = persons.find(person => person.id === id).name
+    if (!window.confirm(`Delete ${name}?`)) return
+
+    personService
+      .remove(id)
+      .then(() => {
+        const newPersons = [...persons].filter(person => person.id !== id)
+        setPersons(newPersons)
+      })
+  }
+
   const personsToShow = (newFilter === '')
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()));
@@ -70,7 +81,10 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <PersonDisplay persons={personsToShow} />
+      <PersonDisplay 
+        persons={personsToShow} 
+        handleDelete={deletePerson}
+      />
     </div>
   )
 }

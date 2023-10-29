@@ -35,13 +35,29 @@ const App = () => {
     if (newName === '') return;
 
     if (persons.map(person => person.name).includes(newName))
-      return alert(`${newName} is already added to phonebook`);
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
+        return editNumber()
+      else
+        return
 
     const personObject = {name: newName, number: newNumber};
     personService
       .create(personObject)
       .then(data => {
         setPersons(persons.concat(data));
+        setNewName('');
+        setNewNumber('');
+      })
+  }
+
+  const editNumber = () => {
+    const personObject = {name: newName, number: newNumber}
+    const id = persons.find(person => person.name === newName).id
+    
+    personService
+      .update(personObject, id)
+      .then(data => {
+        setPersons(persons.map(p => p.id === id ? data : p))
         setNewName('');
         setNewNumber('');
       })

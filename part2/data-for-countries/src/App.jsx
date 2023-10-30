@@ -1,78 +1,87 @@
 import { useState, useEffect } from 'react'
 import CountryService from './services/countries'
+import WeatherService from './services/weather'
 import Display from './components/Display'
 
+const isIncluded = (s1, s2) => s1.toLowerCase().includes(s2.toLowerCase())
+
 function App() {
-	const [query, setQuery] = useState('')
-  const [countries, setCountries] = useState([])
+	const [country, setCountry] = useState(null)
 	const [countryList, setCountryList] = useState(null)
+	const [filter, setFilter] = useState('')
+	const [filterList, setFilterList] = useState([])
 	const [stats, setStats] = useState(null)
 
+
 	useEffect(() => {
+		console.log('gathering initial country list...') // debug
 		CountryService
 			.getAll()
 			.then(data => {
 				setCountryList(data.map(country => country.name.common));
+				console.log('...gathered initial country list') // debug
 			})
 	}, [])
 
 	useEffect(() => {
 		if (!countryList) return
+		console.log(`filtering countries with filter "${filter}"...`) // debug
+		setFilterList(countryList.filter(country => isIncluded(country, filter)))
+	}, [filter])
 
-		console.log('query: ', query); // debug
-		const filteredList = countryList.filter(country => 
-			country.toLowerCase().includes(query.toLowerCase())
-		);
-		console.log('filtered list: ', filteredList); // debug
-		setCountries(filteredList)
+	useEffect(() => {
+		if (filterList.length === 1)
+			setCountry(filterList[0])
+		else if (country)
+			setCountry(null)
+	}, [filterList])
 
-		if (filteredList.length === 1) {
-			const country = filteredList[0]
-			if (countries.length === 1 && countries[0] === country)
-				return
-			CountryService
-				.find(filteredList[0])
-				.then(data => {
-					console.log(`${filteredList[0]} data:`, data);
-					setStats({
-						name: data.name.common,
-						capital: data.capital,
-						area: data.area,
-						// languages: Object.values(data.languages),
-						flag: data.flags.png,
-						altFlag: data.flags.alt
-					})
+	useEffect(() => {
+		if (!country) return
+		console.log(`gathering country stats of ${country}...`) // debug
+		
+		CountryService
+			.find(country)
+			.then(data => {
+				setStats({
+					name: data.name.common,
+					capital: data.capital,
+					area: data.area,
+					languages: Object.values(data.languages),
+					flag: data.flags.png,
+					altFlag: data.flags.alt,
 				})
-		}
-	}, [query, countryList])
+			})
+	}, [country])
 
-	useEffect(() => console.log(stats), [stats]) // debug
+	useEffect(() => {
+		if (!stats) return
 
-
-	const handleQuery = event => {
-		setQuery(event.target.value);
-	}
+		WeatherService
+			.get(stats.capital)
+			.then(res => console.log('weather response', res)) // todo
+	}, [stats])
 
 	const display = () => {
-		if (countries.length > 10)
-			if (query !== '')
-				return <div>Too many countries found</div>
-			else
-				return null
-		else if (countries.length == 0)
-			return <div>No countries found</div>
-		else if (countries.length == 1 && stats && stats.name === countries[0])
+		if (country && stats && stats.name === country)
 			return <Display stats={stats}/>
+		else if (filterList.length > 10)
+			return (filter !== '') ? <div>Too many countries found</div> : null
+		else if (filterList.length == 0)
+			return <div>No countries found</div>
 		else
-			return countries.map((country, index) => (
-				<div key={index}>{country}</div>
+			return filterList.map(country => (
+				<div key={country}>
+					<span>{country}</span>
+					<button onClick={() => setCountry(country)}>show</button>
+				</div>
 			))
 	}
 
   return (
     <>
       <span>find countries</span>
-      <input onChange={handleQuery} />
+      <input onChange={e => setFilter(e.target.value)} />
 			{display()}
     </>
   )

@@ -5,10 +5,12 @@ const Display = ({ stats }) => {
 			<div>capital {stats.capital}</div>
 			<div>area {stats.area}</div>
 			<br />
-			<h3>languages</h3>
-			{/* {stats.languages.map((language, index) => (
-				<div key={index}>{language}</div>
-			))} */}
+			<h3>languages:</h3>
+			<ul>
+				{stats.languages.map((language, index) => (
+					<li key={index}>{language}</li>
+				))}
+			</ul>
 			<img src={stats.flag} alt={stats.altFlag} />
 		</>
 	)

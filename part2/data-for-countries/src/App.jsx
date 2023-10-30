@@ -12,7 +12,6 @@ function App() {
 	const [filterList, setFilterList] = useState([])
 	const [stats, setStats] = useState(null)
 
-
 	useEffect(() => {
 		console.log('gathering initial country list...') // debug
 		CountryService
@@ -40,31 +39,32 @@ function App() {
 		if (!country) return
 		console.log(`gathering country stats of ${country}...`) // debug
 		
-		CountryService
-			.find(country)
-			.then(data => {
-				setStats({
-					name: data.name.common,
-					capital: data.capital,
-					area: data.area,
-					languages: Object.values(data.languages),
-					flag: data.flags.png,
-					altFlag: data.flags.alt,
-				})
+		const getData = async () => {
+			const countryData = await CountryService.find(country);
+			console.log('country data: ', countryData)
+			const weatherData = await WeatherService.get(countryData.capital);
+			console.log('weather data: ', weatherData)
+
+			setStats({
+				name: countryData.name.common,
+				capital: countryData.capital,
+				area: countryData.area,
+				languages: Object.values(countryData.languages),
+				flag: countryData.flags.png,
+				altFlag: countryData.flags.alt,
+				temp: weatherData.main.temp,
+				wind: weatherData.wind.speed,
+				icon: weatherData.weather[0].icon,
 			})
+		}
+		getData()
+		
+		return () => {}
 	}, [country])
 
-	useEffect(() => {
-		if (!stats) return
-
-		WeatherService
-			.get(stats.capital)
-			.then(res => console.log('weather response', res)) // todo
-	}, [stats])
-
 	const display = () => {
-		if (country && stats && stats.name === country)
-			return <Display stats={stats}/>
+		if (country && stats && stats.name == country)
+			return <Display stats={stats} />
 		else if (filterList.length > 10)
 			return (filter !== '') ? <div>Too many countries found</div> : null
 		else if (filterList.length == 0)

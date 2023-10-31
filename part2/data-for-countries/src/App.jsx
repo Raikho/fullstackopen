@@ -14,12 +14,12 @@ function App() {
 
 	useEffect(() => {
 		console.log('gathering initial country list...') // debug
-		CountryService
-			.getAll()
-			.then(data => {
-				setCountryList(data.map(country => country.name.common));
-				console.log('...gathered initial country list') // debug
-			})
+
+		const gatherData = async () => {
+			const data = await CountryService.getAll();
+			setCountryList(data.map(country => country.name.common));
+		}
+		gatherData();
 	}, [])
 
 	useEffect(() => {
@@ -38,13 +38,13 @@ function App() {
 	useEffect(() => {
 		if (!country) return
 		console.log(`gathering country stats of ${country}...`) // debug
-		
+
 		const getData = async () => {
 			const countryData = await CountryService.find(country);
-			console.log('country data: ', countryData)
+			console.log('country data: ', countryData) // debug
 			const weatherData = await WeatherService.get(countryData.capital);
-			console.log('weather data: ', weatherData)
-
+			console.log('weather data: ', weatherData) // debug
+			
 			setStats({
 				name: countryData.name.common,
 				capital: countryData.capital,
@@ -54,17 +54,18 @@ function App() {
 				altFlag: countryData.flags.alt,
 				temp: weatherData.main.temp,
 				wind: weatherData.wind.speed,
-				icon: weatherData.weather[0].icon,
+				iconUrl: WeatherService.getIconUrl(weatherData.weather[0].icon),
 			})
 		}
 		getData()
 		
-		return () => {}
 	}, [country])
 
 	const display = () => {
 		if (country && stats && stats.name == country)
 			return <Display stats={stats} />
+		else if (filter === '')
+			return null
 		else if (filterList.length > 10)
 			return (filter !== '') ? <div>Too many countries found</div> : null
 		else if (filterList.length == 0)

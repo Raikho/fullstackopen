@@ -13,9 +13,9 @@ const Display = ({ stats }) => {
 			</ul>
 			<img src={stats.flag} alt={stats.altFlag} />
 			<h3>Weather in {stats.capital}</h3>
-			<div>temperature {stats.temp} Kelvin</div>
+			<div>temperature {stats.temp} Celcius</div>
+			<img src={stats.iconUrl} alt={'weather icon'} />
 			<div>wind {stats.wind} m/s</div>
-			<div>icon: {stats.icon}</div>
 		</>
 	)
 }

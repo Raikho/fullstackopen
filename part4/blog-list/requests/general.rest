@@ -1,0 +1,29 @@
+@host = http://localhost:3003/api/blogs
+@id = 654767e821f94531c334952d
+@deleteId = 65476a18d78b70e1eae8b616
+###
+GET {{host}}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "title": "First Blog",
+    "author": "Bob Smith",
+    "url": "www.my_blog.com",
+    "likes": 4
+}
+###
+GET {{host}}/{{id}}
+###
+DELETE {{host}}/{{deleteId}}
+###
+PUT {{host}}/{{id}}
+Content-Type: application/json
+
+{
+    "title": "First Blog v1",
+    "author": "Bob Smith",
+    "url": "www.my_blog.com",
+    "likes": 4
+}

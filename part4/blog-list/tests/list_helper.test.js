@@ -76,7 +76,6 @@ describe('favorite blog', () => {
 	})
 })
 
-
 describe('most blogs', () => {
 	test('of empty list is empty array', () => {
 		expect(listHelper.mostBlogs([])).toEqual({})
@@ -85,6 +84,18 @@ describe('most blogs', () => {
 		expect(listHelper.mostBlogs(blogs)).toEqual({
 			author: 'Robert C. Martin',
 			blogs: 3,
+		})
+	})
+})
+
+describe('most liked author', () => {
+	test('of empty list is empty array', () => {
+		expect(listHelper.mostLikes([])).toEqual({})
+	})
+	test('of many blogs lists the author with the most likes', () => {
+		expect(listHelper.mostLikes(blogs)).toEqual({
+			author: 'Edsger W. Dijkstra',
+			likes: 17,
 		})
 	})
 })

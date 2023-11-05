@@ -21,18 +21,12 @@ const favoriteBlog = blogs => {
 
 	return { title, author, likes }
 }
+
 const mostBlogs = blogs => {
 	if (blogs.length === 0)
 		return {}
 
-	const authors = blogs.map(b => b.author)
-	const frequencies = []
-
-	authors.forEach(author => {
-		if (!frequencies.find(f => f.author === author))
-			frequencies.push({ author })
-	})
-
+	const frequencies = getFrequencies(blogs, 'likes')
 	frequencies.forEach(f => {
 		f.blogs = blogs.reduce((prev, blog) => {
 			return (blog.author === f.author)
@@ -45,9 +39,39 @@ const mostBlogs = blogs => {
 	return frequencies.find(f => f.blogs === maxBlogs)
 }
 
+const mostLikes = blogs => {
+	if (blogs.length === 0)
+		return {}
+
+	const frequencies = getFrequencies(blogs, 'likes')
+	frequencies.forEach(f => {
+		f.likes = blogs.reduce((prev, blog) => {
+			return (blog.author === f.author)
+				? prev + blog.likes
+				: prev
+		}, 0)
+	})
+
+	const maxLikes = Math.max(...frequencies.map(f => f.likes))
+	return frequencies.find(f => f.likes === maxLikes)
+}
+
+const getFrequencies = arr => {
+	const authors = arr.map(item => item.author)
+	const frequencies = []
+
+	authors.forEach(author => {
+		if (!frequencies.find(f => f.author === author))
+			frequencies.push({ author })
+	})
+
+	return frequencies
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 }

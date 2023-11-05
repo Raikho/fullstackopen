@@ -1,0 +1,21 @@
+const config = require('../utils/config')
+const logger = require('../utils/logger')
+const mongoose = require('mongoose')
+
+mongoose.set('strictQuery', false)
+const url = config.MONGODB_URI
+
+logger.info('connecting to', url)
+mongoose.connect(url)
+	.then(() => logger.info('connected to MongoDB'))
+	.catch(err => logger.error('error connecting to MongoDB:', err.message))
+
+const blogSchema = new mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+	}
+	// TODO: other fields
+})
+
+module.exports = mongoose.model('Blog', blogSchema)

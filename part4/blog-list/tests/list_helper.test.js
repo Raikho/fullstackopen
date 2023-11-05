@@ -67,11 +67,24 @@ describe('favorite blog', () => {
 	test('of empty list is empty array', () => {
 		expect(listHelper.favoriteBlog([])).toEqual({})
 	})
-	test('of many blogs is the one with the most likes', () => {
+	test('of many blogs lists the one with the most likes', () => {
 		expect(listHelper.favoriteBlog(blogs)).toEqual({
 			title: 'Canonical string reduction',
 			author: 'Edsger W. Dijkstra',
 			likes: 12,
+		})
+	})
+})
+
+
+describe('most blogs', () => {
+	test('of empty list is empty array', () => {
+		expect(listHelper.mostBlogs([])).toEqual({})
+	})
+	test('of many blogs lists the author with the most blogs', () => {
+		expect(listHelper.mostBlogs(blogs)).toEqual({
+			author: 'Robert C. Martin',
+			blogs: 3,
 		})
 	})
 })

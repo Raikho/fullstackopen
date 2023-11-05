@@ -58,7 +58,20 @@ describe('total likes', () => {
 	test('of one blog equals the likes of that', () => {
 		expect(listHelper.totalLikes([blogs[0]])).toBe(7)
 	})
-	test('of multiple blogs is summed correctly', () => {
+	test('of many blogs is summed correctly', () => {
 		expect(listHelper.totalLikes(blogs)).toBe(36)
+	})
+})
+
+describe('favorite blog', () => {
+	test('of empty list is empty array', () => {
+		expect(listHelper.favoriteBlog([])).toEqual({})
+	})
+	test('of many blogs is the one with the most likes', () => {
+		expect(listHelper.favoriteBlog(blogs)).toEqual({
+			title: 'Canonical string reduction',
+			author: 'Edsger W. Dijkstra',
+			likes: 12,
+		})
 	})
 })

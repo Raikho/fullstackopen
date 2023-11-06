@@ -26,7 +26,7 @@ const mostBlogs = blogs => {
 	if (blogs.length === 0)
 		return {}
 
-	const frequencies = getFrequencies(blogs, 'likes')
+	const frequencies = getBaseFrequencies(blogs)
 	frequencies.forEach(f => {
 		f.blogs = blogs.reduce((prev, blog) => {
 			return (blog.author === f.author)
@@ -43,7 +43,7 @@ const mostLikes = blogs => {
 	if (blogs.length === 0)
 		return {}
 
-	const frequencies = getFrequencies(blogs, 'likes')
+	const frequencies = getBaseFrequencies(blogs)
 	frequencies.forEach(f => {
 		f.likes = blogs.reduce((prev, blog) => {
 			return (blog.author === f.author)
@@ -56,7 +56,7 @@ const mostLikes = blogs => {
 	return frequencies.find(f => f.likes === maxLikes)
 }
 
-const getFrequencies = arr => {
+const getBaseFrequencies = arr => {
 	const authors = arr.map(item => item.author)
 	const frequencies = []
 

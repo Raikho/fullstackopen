@@ -44,7 +44,14 @@ const extraBlog = {
 	likes: 1,
 }
 
+const noLikesBlog = {
+	title: 'No Likes Blog',
+	author: 'No Likes Author',
+	url: 'http://no_likes_blog.com',
+}
+
 module.exports = {
 	initialBlogs,
 	extraBlog,
+	noLikesBlog,
 }

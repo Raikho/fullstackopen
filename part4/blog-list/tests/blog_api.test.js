@@ -52,6 +52,14 @@ describe('POST blog', () => {
 		expect(response.body).toHaveLength(blogs.length + 1)
 		expect(contents).toContain(helper.extraBlog.title)
 	})
+
+	test('without likes defaults to 0 likes', async () => {
+		const response = await api
+			.post('/api/blogs')
+			.send(helper.noLikesBlog)
+			.expect(201)
+		expect(response.body.likes).toBe(0)
+	})
 })
 
 afterAll(async () => await mongoose.connection.close())

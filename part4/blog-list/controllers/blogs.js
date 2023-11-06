@@ -16,13 +16,12 @@ blogRouter.get('/:id', (req, res, next) => {
 		.catch(err => next(err))
 })
 
-blogRouter.post('/', (req, res, next) => {
+blogRouter.post('/', async (req, res) => {
 	const { title, author, url, likes } = req.body
 	const blog = new Blog({ title, author, url, likes })
-	blog
-		.save()
-		.then(savedBlog => res.json(savedBlog))
-		.catch(err => next(err))
+
+	const savedBlog = await blog.save()
+	res.status(201).json(savedBlog)
 })
 
 blogRouter.delete('/:id', (req, res, next) => {

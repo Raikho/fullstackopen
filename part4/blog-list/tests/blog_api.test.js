@@ -60,6 +60,17 @@ describe('POST blog', () => {
 			.expect(201)
 		expect(response.body.likes).toBe(0)
 	})
+
+	test('w/o title/url gives 400 bad request', async () => {
+		await api
+			.post('/api/blogs')
+			.send(helper.noTitleBlog)
+			.expect(400)
+		await api
+			.post('/api/blogs')
+			.send(helper.noUrlBlog)
+			.expect(400)
+	})
 })
 
 afterAll(async () => await mongoose.connection.close())

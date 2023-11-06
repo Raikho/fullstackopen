@@ -23,8 +23,6 @@ describe('GET blogs', () => {
 
 	test('return all blogs', async () => {
 		const response = await api.get('/api/blogs')
-		console.log(response.statusCode)
-		console.log(response.type)
 		expect(response.body).toHaveLength(blogs.length)
 	})
 
@@ -34,5 +32,12 @@ describe('GET blogs', () => {
 		expect(contents).toContain('React patterns')
 	})
 })
+
+test('unique identifier property is named id', async () => {
+	const response = await api.get('/api/blogs')
+	expect(response.body[0].id).toBeDefined()
+	expect(response.body[0]._id).not.toBeDefined()
+})
+
 
 afterAll(async () => await mongoose.connection.close())

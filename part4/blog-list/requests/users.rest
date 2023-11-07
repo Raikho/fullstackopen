@@ -1,0 +1,14 @@
+@host = http://localhost:3003/api/users
+# @id = 654767e821f94531c334952d
+# @deleteId = 65476a18d78b70e1eae8b616
+###
+GET {{host}}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "username": "bob_smith",
+    "name": "Bob Smith",
+    "password": "bob_smith_1234"
+}

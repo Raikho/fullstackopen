@@ -1,14 +1,31 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog.js')
+const User = require('../models/user.js')
+
+beforeAll(async () => {
+	await User.deleteMany({})
+	const passwordHash = await bcrypt.hash('secret', 10)
+	const user = new User({
+		username: 'root',
+		name: 'Root Name',
+		passwordHash,
+	})
+	await user.save()
+})
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
-	await Blog.insertMany(helper.initialBlogs)
+	const user = await User.findOne({})
+	const updatedBlogs = helper.initialBlogs.map(b => {
+		return { ...b, user: user._id }
+	})
+	await Blog.insertMany(updatedBlogs)
 })
 
 describe('GET blogs', () => {
@@ -29,6 +46,13 @@ describe('GET blogs', () => {
 		const contents = response.body.map(b => b.title)
 		expect(contents).toContain(helper.initialBlogs[0].title)
 	})
+
+	test('returns user info (id & username)', async () => {
+		const response = await api.get('/api/blogs')
+		const userInfo = response.body[0].user
+		expect(userInfo.id).toBeDefined()
+		expect(userInfo.username).toBeDefined()
+	})
 })
 
 describe('GET specific blog', () => {
@@ -39,8 +63,7 @@ describe('GET specific blog', () => {
 			.get(`/api/blogs/${blogToSearch.id}`)
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
-
-		expect(resultBlog.body).toEqual(blogToSearch)
+		expect(resultBlog.body.title).toEqual(blogToSearch.title)
 	})
 
 	test('fails with code 404 if no blog exists', async () => {
@@ -101,6 +124,13 @@ describe('POST blog', () => {
 		const blogsAtEnd = await helper.fetchBlogs()
 
 		expect(blogsAtEnd.length).toBe(blogsAtStart.length)
+	})
+
+	test('adds user information', async () => {
+		const response = await api
+			.post('/api/blogs')
+			.send(helper.extraBlog)
+		expect(response.body.user).toBeDefined()
 	})
 })
 

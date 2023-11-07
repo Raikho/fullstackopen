@@ -5,12 +5,10 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
-const blogs = helper.initialBlogs
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
-	for (let blog of blogs)
-		await new Blog(blog).save()
+	await Blog.insertMany(helper.initialBlogs)
 })
 
 describe('GET blogs', () => {
@@ -23,13 +21,13 @@ describe('GET blogs', () => {
 
 	test('return all blogs', async () => {
 		const response = await api.get('/api/blogs')
-		expect(response.body).toHaveLength(blogs.length)
+		expect(response.body).toHaveLength(helper.initialBlogs.length)
 	})
 
 	test('returns one of the saved titles', async () => {
 		const response = await api.get('/api/blogs')
 		const contents = response.body.map(b => b.title)
-		expect(contents).toContain('React patterns')
+		expect(contents).toContain(helper.initialBlogs[0].title)
 	})
 })
 
@@ -46,10 +44,17 @@ describe('GET specific blog', () => {
 	})
 
 	test('fails with code 404 if no blog exists', async () => {
-		const invalidId = await helper.invalidId()
+		const missingId = await helper.missingId()
+		await api
+			.get(`/api/blogs/${missingId}`)
+			.expect(404)
+	})
+
+	test('fails with code 400 if id is invalid', async () => {
+		const invalidId = '0'
 		await api
 			.get(`/api/blogs/${invalidId}`)
-			.expect(404)
+			.expect(400)
 	})
 })
 
@@ -71,7 +76,7 @@ describe('POST blog', () => {
 		const response = await api.get('/api/blogs')
 		const contents = response.body.map(blog => blog.title)
 
-		expect(response.body).toHaveLength(blogs.length + 1)
+		expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
 		expect(contents).toContain(helper.extraBlog.title)
 	})
 
@@ -84,6 +89,7 @@ describe('POST blog', () => {
 	})
 
 	test('w/o title/url gives 400 bad request', async () => {
+		const blogsAtStart = await helper.fetchBlogs()
 		await api
 			.post('/api/blogs')
 			.send(helper.noTitleBlog)
@@ -92,6 +98,9 @@ describe('POST blog', () => {
 			.post('/api/blogs')
 			.send(helper.noUrlBlog)
 			.expect(400)
+		const blogsAtEnd = await helper.fetchBlogs()
+
+		expect(blogsAtEnd.length).toBe(blogsAtStart.length)
 	})
 })
 
@@ -108,6 +117,20 @@ describe('DELETE blog', () => {
 
 		const titles = endBlogs.map(b => b.title)
 		expect(titles).not.toContain(blogToDelete.title)
+	})
+})
+
+describe('PUT blog', () => {
+	test('successfully increases the likes of a blog', async () => {
+		const startBlogs = await helper.fetchBlogs()
+		const { title, author, url, likes, id } = startBlogs[0]
+
+		const updatedBlog = await api
+			.put(`/api/blogs/${id}`)
+			.send({ title, author, url, likes: likes + 1 })
+			.expect(200)
+
+		expect(updatedBlog.body.likes - likes).toBe(1)
 	})
 })
 

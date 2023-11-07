@@ -62,7 +62,7 @@ const noUrlBlog = {
 	likes: 2,
 }
 
-const invalidId = async () => {
+const missingId = async () => {
 	const blog = new Blog({
 		title: 'invalid blog title',
 		author: 'invalid blog author',
@@ -85,6 +85,6 @@ module.exports = {
 	noLikesBlog,
 	noTitleBlog,
 	noUrlBlog,
-	invalidId,
+	missingId,
 	fetchBlogs,
 }

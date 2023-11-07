@@ -1,3 +1,5 @@
+const Blog = require('../models/blog')
+
 const initialBlogs = [
 	{
 		title: 'React patterns',
@@ -60,10 +62,16 @@ const noUrlBlog = {
 	likes: 2,
 }
 
+const fetchBlogs = async () => {
+	const blogs = await Blog.find({})
+	return blogs.map(b => b.toJSON())
+}
+
 module.exports = {
 	initialBlogs,
 	extraBlog,
 	noLikesBlog,
 	noTitleBlog,
 	noUrlBlog,
+	fetchBlogs,
 }

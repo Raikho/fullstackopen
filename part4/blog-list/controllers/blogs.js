@@ -24,11 +24,9 @@ blogRouter.post('/', async (req, res) => {
 	res.status(201).json(savedBlog)
 })
 
-blogRouter.delete('/:id', (req, res, next) => {
-	Blog
-		.findByIdAndDelete(req.params.id)
-		.then(() => res.status(204).end())
-		.catch(err => next(err))
+blogRouter.delete('/:id', async (req, res) => {
+	await Blog.findByIdAndDelete(req.params.id)
+	res.status(204).end()
 })
 
 blogRouter.put('/:id', (req, res, next) => {

@@ -33,9 +33,11 @@ describe.skip('GET blogs', () => {
 	})
 })
 
-test.skip('unique identifier property is named id', async () => {
-	const response = await api.get('/api/blogs')
-	expect(response.body[0].id).toBeDefined()
+describe('unique id', () => {
+	test.skip('property is named id, not _id', async () => {
+		const response = await api.get('/api/blogs')
+		expect(response.body[0].id).toBeDefined()
+	})
 })
 
 describe('POST blog', () => {
@@ -70,6 +72,22 @@ describe('POST blog', () => {
 			.post('/api/blogs')
 			.send(helper.noUrlBlog)
 			.expect(400)
+	})
+})
+
+describe.only('DELETE blog', () => {
+	test('deletes a resource w/ code 204', async () => {
+		const startBlogs = await helper.fetchBlogs()
+		const blogToDelete =  startBlogs[0]
+		await api
+			.delete(`/api/blogs/${blogToDelete.id}`)
+			.expect(204)
+		const endBlogs = await helper.fetchBlogs()
+
+		expect(startBlogs.length - endBlogs.length).toBe(1)
+
+		const titles = endBlogs.map(b => b.title)
+		expect(titles).not.toContain(blogToDelete.title)
 	})
 })
 

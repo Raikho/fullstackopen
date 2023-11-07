@@ -62,6 +62,18 @@ const noUrlBlog = {
 	likes: 2,
 }
 
+const invalidId = async () => {
+	const blog = new Blog({
+		title: 'invalid blog title',
+		author: 'invalid blog author',
+		url: 'http://invalid_blog.com',
+		likes: 0,
+	})
+	await blog.save()
+	await blog.deleteOne()
+	return blog._id.toString()
+}
+
 const fetchBlogs = async () => {
 	const blogs = await Blog.find({})
 	return blogs.map(b => b.toJSON())
@@ -73,5 +85,6 @@ module.exports = {
 	noLikesBlog,
 	noTitleBlog,
 	noUrlBlog,
+	invalidId,
 	fetchBlogs,
 }

@@ -6,14 +6,10 @@ blogRouter.get('/', async (req, res) => {
 	res.json(blogs)
 })
 
-blogRouter.get('/:id', (req, res, next) => {
-	Blog
-		.findById(req.params.id)
-		.then(blog => {
-			if (blog) res.json(blog)
-			else res.status(404).end()
-		})
-		.catch(err => next(err))
+blogRouter.get('/:id', async (req, res) => {
+	const blog = await Blog.findById(req.params.id)
+	if (blog) res.json(blog)
+	else res.status(404).end()
 })
 
 blogRouter.post('/', async (req, res) => {
@@ -29,7 +25,7 @@ blogRouter.delete('/:id', async (req, res) => {
 	res.status(204).end()
 })
 
-blogRouter.put('/:id', (req, res, next) => {
+blogRouter.put('/:id', (req, res, next) => { // TODO async
 	const { title, author, url, likes } = req.body
 	Blog
 		.findByIdAndUpdate(

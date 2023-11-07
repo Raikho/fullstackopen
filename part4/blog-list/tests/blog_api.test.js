@@ -13,7 +13,7 @@ beforeEach(async () => {
 		await new Blog(blog).save()
 })
 
-describe.skip('GET blogs', () => {
+describe('GET blogs', () => {
 	test('are returned as json', async () => {
 		await api
 			.get('/api/blogs')
@@ -33,8 +33,28 @@ describe.skip('GET blogs', () => {
 	})
 })
 
+describe('GET specific blog', () => {
+	test('succeeds with status 200', async () => {
+		const blogs = await helper.fetchBlogs()
+		const blogToSearch = blogs[0]
+		const resultBlog = await api
+			.get(`/api/blogs/${blogToSearch.id}`)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		expect(resultBlog.body).toEqual(blogToSearch)
+	})
+
+	test('fails with code 404 if no blog exists', async () => {
+		const invalidId = await helper.invalidId()
+		await api
+			.get(`/api/blogs/${invalidId}`)
+			.expect(404)
+	})
+})
+
 describe('unique id', () => {
-	test.skip('property is named id, not _id', async () => {
+	test('property is named id, not _id', async () => {
 		const response = await api.get('/api/blogs')
 		expect(response.body[0].id).toBeDefined()
 	})
@@ -75,7 +95,7 @@ describe('POST blog', () => {
 	})
 })
 
-describe.only('DELETE blog', () => {
+describe('DELETE blog', () => {
 	test('deletes a resource w/ code 204', async () => {
 		const startBlogs = await helper.fetchBlogs()
 		const blogToDelete =  startBlogs[0]

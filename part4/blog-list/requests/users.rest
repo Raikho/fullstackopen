@@ -12,3 +12,21 @@ Content-Type: application/json
     "name": "Bob Smith",
     "password": "bob_smith_1234"
 }
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "name": "Jane Doe",
+    "password": "jane doe 1234"
+}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "username": "no_password",
+    "name": "Jane Doe",
+    "password": "ab"
+}
+###

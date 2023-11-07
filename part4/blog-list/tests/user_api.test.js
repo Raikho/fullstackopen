@@ -53,8 +53,35 @@ describe('POST user', () => {
 
 		const endingUsers = await helper.fetchUsers()
 		expect(endingUsers).toEqual(startingUsers)
+		console.log(result.body) // debug
 		expect(result.body.error)
 			.toContain('expected `username` to be unique')
+	})
+
+	test('fails when password doesnt meet requirements', async () => {
+		const startingUsers = await helper.fetchUsers()
+
+		const result1 = await api
+			.post('/api/users')
+			.send({
+				username: 'Jane Doe',
+			})
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		const result2 = await api
+			.post('/api/users')
+			.send({
+				username: 'Jane Doe',
+				password: '12'
+			})
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		const endingUsers = await helper.fetchUsers()
+		expect(endingUsers).toEqual(startingUsers)
+		expect(result1.body.error).toContain('Password validation failed')
+		expect(result2.body.error).toContain('Password validation failed')
 	})
 })
 

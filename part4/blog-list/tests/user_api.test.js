@@ -53,7 +53,6 @@ describe('POST user', () => {
 
 		const endingUsers = await helper.fetchUsers()
 		expect(endingUsers).toEqual(startingUsers)
-		console.log(result.body) // debug
 		expect(result.body.error)
 			.toContain('expected `username` to be unique')
 	})

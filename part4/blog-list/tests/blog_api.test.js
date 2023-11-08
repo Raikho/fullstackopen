@@ -11,7 +11,6 @@ let auth1
 let auth2
 
 beforeAll(async () => {
-	return
 	await User.deleteMany({})
 	await helper.addNewUser(helper.user1)
 	await helper.addNewUser(helper.user2)
@@ -19,11 +18,12 @@ beforeAll(async () => {
 	auth2 = await helper.getAuth(helper.user2)
 })
 
-beforeEach(async () => {
+beforeAll(async () => {
 	await Blog.deleteMany({})
-	const user = await User.findOne({})
-	const updatedBlogs = helper.initialBlogs.map(b => {
-		return { ...b, user: user._id }
+	const users = await User.find({})
+	const updatedBlogs = helper.initialBlogs.map((b, index) => {
+		const user = (index <= 3) ? users[0] : users[1]
+		return { ...b, user: user._id.toString() }
 	})
 	await Blog.insertMany(updatedBlogs)
 })
@@ -153,6 +153,7 @@ describe('DELETE blog', () => {
 		const blogToDelete =  startBlogs[0]
 		await api
 			.delete(`/api/blogs/${blogToDelete.id}`)
+			.set({ Authorization: auth1 })
 			.expect(204)
 		const endBlogs = await helper.fetchBlogs()
 
@@ -160,6 +161,14 @@ describe('DELETE blog', () => {
 
 		const titles = endBlogs.map(b => b.title)
 		expect(titles).not.toContain(blogToDelete.title)
+	})
+	test('fails with 401 if user doesnt own blog', async () => {
+		const startBlogs = await helper.fetchBlogs()
+		const blogToDelete = startBlogs[0]
+		await api
+			.delete(`/api/blogs/${blogToDelete.id}`)
+			.set({ Authorization: auth2 })
+			.expect(401)
 	})
 })
 

@@ -15,4 +15,4 @@ const remove = tag => {
     window.localStorage.removeItem(tag)
 }
 
-export default { save, load }
+export default { save, load, remove }

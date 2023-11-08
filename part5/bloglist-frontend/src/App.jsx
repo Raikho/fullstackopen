@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './services/storage'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import BlogDisplay from './components/BlogDisplay'
 
 const App = () => {
@@ -22,7 +23,6 @@ const App = () => {
       setUser(item)
       blogService.setToken(item.token)
     }
-
     blogService
       .getAll()
       .then(blogs => setBlogs(blogs))
@@ -38,7 +38,6 @@ const App = () => {
       })
       setUser(user)
       storage.save('loggedBlogappUser', user)
-      // window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
       console.log('successfully logged in')
@@ -59,18 +58,6 @@ const App = () => {
   const blogForm = () => (
     <div>
       <div>logged in as {user.username}</div>
-      <form onSubmit={addBlog}>
-        <div>
-          Blog Title
-          <input
-            type='text'
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <button type='submit'>save</button>
-      </form>
     </div>
   )
 
@@ -79,11 +66,11 @@ const App = () => {
       {
         (user === null) ?
         <LoginForm
-          handleLogin={handleLogin}
+          handleSubmit={handleLogin}
           username={username}
-          setUsername={setUsername}
+          handleUsernameChange={setUsername}
           password={password}
-          setPassword={setPassword}
+          handlePasswordChange={setPassword}
         /> :
         <BlogDisplay 
           nameOfUser={user.name}
@@ -91,6 +78,7 @@ const App = () => {
           handleLogout={handleLogout}
         />
       }
+      <BlogForm />
     </div>
   )
 }

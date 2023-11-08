@@ -1,26 +1,27 @@
-const LoginForm = props => {
+import Field from "./Field"
+
+const LoginForm = ({
+	handleSubmit,
+	handleUsernameChange,
+	handlePasswordChange,
+	username,
+	password,
+}) => {
 	return (
 	  <div>
 		<h1>log in to application</h1>
-		<form onSubmit={props.handleLogin}>
-		  <div>
-			username
-			<input
-			  type='text'
-			  value={props.username}
-			  name="Username"
-			  onChange={({ target }) => props.setUsername(target.value)}
+		<form onSubmit={handleSubmit}>
+			<Field 
+				name='username'
+				value={username}
+				handleChange={handleUsernameChange}
 			/>
-		  </div>
-		  <div>
-			password
-			<input
-			  type='password'
-			  value={props.password}
-			  name="Password"
-			  onChange={({ target }) => props.setPassword(target.value)}
+			<Field 
+				name='password'
+				type='password'
+				value={password}
+				handleChange={handlePasswordChange}
 			/>
-		  </div>
 		  <button type="submit">login</button>
 		</form>
 	  </div>

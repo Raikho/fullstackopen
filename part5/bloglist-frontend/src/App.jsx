@@ -13,6 +13,8 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const USERNAME = 'bob_smith' // debug
   const PASSWORD = 'bob_smith_1234' // debug
@@ -51,8 +53,10 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = () => {
-    console.log('adding blog...')
+  const handleAddBlog = async event => {
+    event.preventDefault()
+    const obj = { title, author, url }
+    console.log('adding blog...', obj)
   }
 
   const blogForm = () => (
@@ -78,7 +82,15 @@ const App = () => {
           handleLogout={handleLogout}
         />
       }
-      <BlogForm />
+      <BlogForm
+        handleSubmit={handleAddBlog}
+        title={title}
+        handleChangeTitle={setTitle}
+        author={author}
+        handleChangeAuthor={setAuthor}
+        url={url}
+        handleChangeUrl={setUrl}
+      />
     </div>
   )
 }

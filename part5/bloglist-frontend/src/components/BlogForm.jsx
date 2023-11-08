@@ -1,23 +1,34 @@
 import Field from "./Field"
 
-const BlogForm = ({ handleAddBlog }) => {
+const BlogForm = ({ 
+  handleSubmit,
+  url,
+  title,
+  author,
+  handleChangeUrl,
+  handleChangeTitle,
+  handleChangeAuthor,
+}) => {
 	return (
 		<div>
 			<h1>create new</h1>
-      <form onSubmit={ handleAddBlog }>
-        <div>
-          Blog Title
-          <Field 
-            name='Title'
-          />
-          <input
-            type='text'
-            value={'a'}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <button type='submit'>save</button>
+      <form onSubmit={handleSubmit}>
+        <Field 
+          name='Title'
+          value={title}
+          handleChange={handleChangeTitle}
+        />
+        <Field 
+          name='author'
+          value={author}
+          handleChange={handleChangeAuthor}
+        />
+        <Field 
+          name='url'
+          value={url}
+          handleChange={handleChangeUrl}
+        />
+        <button type='submit'>create</button>
       </form>
 		</div>
 	)

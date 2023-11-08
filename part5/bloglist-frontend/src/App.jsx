@@ -14,9 +14,13 @@ const App = () => {
 
 
   useEffect(() => {
+    const item = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
+    if (item)
+      setUser(item)
+
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   const handleLogin = async event => {
@@ -28,13 +32,18 @@ const App = () => {
         password,
       })
       setUser(user)
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
-      console.log('successfully logged in') // debug
-      console.log(user) // debug
+      console.log('successfully logged in')
     } catch (exception) {
-      console.log('ERROR: ', exception.message) // debug
+      console.log('ERROR: ', exception.message)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   const addBlog = () => {
@@ -73,6 +82,7 @@ const App = () => {
         <BlogDisplay 
           nameOfUser={user.name}
           blogs={blogs}
+          handleLogout={handleLogout}
         />
       }
     </div>

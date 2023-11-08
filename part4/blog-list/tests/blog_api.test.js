@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
@@ -8,15 +7,16 @@ const api = supertest(app)
 const Blog = require('../models/blog.js')
 const User = require('../models/user.js')
 
+let auth1
+let auth2
+
 beforeAll(async () => {
+	return
 	await User.deleteMany({})
-	const passwordHash = await bcrypt.hash('secret', 10)
-	const user = new User({
-		username: 'root',
-		name: 'Root Name',
-		passwordHash,
-	})
-	await user.save()
+	await helper.addNewUser(helper.user1)
+	await helper.addNewUser(helper.user2)
+	auth1 = await helper.getAuth(helper.user1)
+	auth2 = await helper.getAuth(helper.user2)
 })
 
 beforeEach(async () => {
@@ -92,6 +92,7 @@ describe('POST blog', () => {
 	test('creates a new blog post', async () => {
 		await api
 			.post('/api/blogs')
+			.set({ Authorization: auth1 })
 			.send(helper.extraBlog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -106,6 +107,7 @@ describe('POST blog', () => {
 	test('without likes defaults to 0 likes', async () => {
 		const response = await api
 			.post('/api/blogs')
+			.set({ Authorization: auth1 })
 			.send(helper.noLikesBlog)
 			.expect(201)
 		expect(response.body.likes).toBe(0)
@@ -115,10 +117,12 @@ describe('POST blog', () => {
 		const blogsAtStart = await helper.fetchBlogs()
 		await api
 			.post('/api/blogs')
+			.set({ Authorization: auth1 })
 			.send(helper.noTitleBlog)
 			.expect(400)
 		await api
 			.post('/api/blogs')
+			.set({ Authorization: auth1 })
 			.send(helper.noUrlBlog)
 			.expect(400)
 		const blogsAtEnd = await helper.fetchBlogs()
@@ -129,9 +133,18 @@ describe('POST blog', () => {
 	test('adds user information', async () => {
 		const response = await api
 			.post('/api/blogs')
+			.set({ Authorization: auth1 })
 			.send(helper.extraBlog)
 		expect(response.body.user).toBeDefined()
 	})
+
+	test('with wrong token fails with 401', async () => {
+		await api
+			.post('/api/blogs')
+			.set({ Authorization: 'Bearer abc' })
+			.send(helper.extraBlog)
+			.expect(401)
+	} )
 })
 
 describe('DELETE blog', () => {

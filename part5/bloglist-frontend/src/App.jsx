@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import storage from './services/storage'
 import LoginForm from './components/LoginForm'
 import BlogDisplay from './components/BlogDisplay'
 
@@ -12,15 +13,19 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState('')
 
-
+  const USERNAME = 'bob_smith' // debug
+  const PASSWORD = 'bob_smith_1234' // debug
+ 
   useEffect(() => {
-    const item = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
-    if (item)
+    const item = storage.load('loggedBlogappUser')
+    if (item) {
       setUser(item)
+      blogService.setToken(item.token)
+    }
 
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService
+      .getAll()
+      .then(blogs => setBlogs(blogs))
   }, [])
 
   const handleLogin = async event => {
@@ -28,11 +33,12 @@ const App = () => {
 
     try {
       const user = await loginService.login({ 
-        username,
-        password,
+        username: USERNAME, // debug
+        password: PASSWORD, // debug
       })
       setUser(user)
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      storage.save('loggedBlogappUser', user)
+      // window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
       console.log('successfully logged in')
@@ -42,7 +48,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
+    storage.remove('loggedBlogappUser')
     setUser(null)
   }
 

@@ -138,7 +138,7 @@ describe('POST blog', () => {
 		expect(response.body.user).toBeDefined()
 	})
 
-	test('with wrong token fails with 401', async () => {
+	test('with invalid token fails with 401', async () => {
 		await api
 			.post('/api/blogs')
 			.set({ Authorization: 'Bearer abc' })
@@ -179,10 +179,21 @@ describe('PUT blog', () => {
 
 		const updatedBlog = await api
 			.put(`/api/blogs/${id}`)
+			.set({ Authorization: auth1 })
 			.send({ title, author, url, likes: likes + 1 })
 			.expect(200)
 
 		expect(updatedBlog.body.likes - likes).toBe(1)
+	})
+	test('fails with 401 if user doesnt own blog', async () => {
+		const startBlogs = await helper.fetchBlogs()
+		const { title, author, url, likes, id } = startBlogs[0]
+
+		await api
+			.put(`/api/blogs/${id}`)
+			.set({ Authorization: auth2 })
+			.send({ title, author, url, likes: likes + 1 })
+			.expect(401)
 	})
 })
 

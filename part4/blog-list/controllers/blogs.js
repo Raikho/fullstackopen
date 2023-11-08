@@ -40,7 +40,13 @@ blogRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
 	res.status(204).end()
 })
 
-blogRouter.put('/:id', async (req, res) => {
+blogRouter.put('/:id', middleware.userExtractor, async (req, res) => {
+	const user = req.user
+	const blog = await Blog.findById(req.params.id)
+
+	if (blog.user.toString() !== user._id.toString())
+		return res.status(401).json({ error: 'unauthorized user' })
+
 	const { title, author, url, likes } = req.body
 	const updatedBlog = await Blog.findByIdAndUpdate(
 		req.params.id,

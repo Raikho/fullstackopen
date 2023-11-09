@@ -80,6 +80,20 @@ const App = () => {
     }
   }
 
+  const removeBlog = async blogObject => {
+    try {
+      const id = blogObject.id
+      await blogService.remove(id)
+      console.log('removed blog', blogObject)
+      setBlogs(blogs.filter(b => b.id !== id))
+      sendTempMessage('success', `"${blogObject.title}" by ${blogObject.author} removed`)
+    }
+    catch (exception) {
+      sendTempMessage('error', `blog was not able to be remove, ${exception.message}`)
+      console.log('ERROR: ', exception.message)
+    }
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -96,7 +110,12 @@ const App = () => {
           </Toggleable>
           <br />
           <br />
-          <BlogList blogs={blogs} handleUpdateBlog={updateBlog}/>
+          <BlogList 
+            blogs={blogs}
+            user={user}
+            handleUpdateBlog={updateBlog}
+            handleRemoveBlog={removeBlog}
+          />
         </div>
       }
     </div>

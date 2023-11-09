@@ -1,11 +1,17 @@
 import Toggleable from "./Toggleable"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleUpdateBlog }) => {
   const blogStyle = {
     padding: '5px',
     border: '1px solid black',
     margin: '5px',
   }
+
+  const likeBlog = () => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+    handleUpdateBlog(updatedBlog)
+  }
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}
@@ -13,7 +19,7 @@ const Blog = ({ blog }) => {
         <div>{blog.url}</div>
         <div>
           likes {blog.likes} 
-          <button onClick={() => {}}>like</button>
+          <button onClick={likeBlog}>like</button>
         </div>
         <div>{blog.user.username}</div>
       </Toggleable>

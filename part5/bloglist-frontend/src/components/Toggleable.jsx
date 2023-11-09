@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, forwardRef, useImperativeHandle } from 'react'
 
-const Toggleable = ({ showText, hideText, children }) => {
+const Toggleable = forwardRef((props, refs) => {
+  const { showText, hideText, children } = props
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = (visible) ? 'hidden' : ''
   const showWhenVisible = (visible) ? '' : 'hidden'
   const toggleVisibility = () => setVisible(!visible)
+
+  useImperativeHandle(refs, () => {return {toggleVisibility}})
 
   return (
     <span>
@@ -18,6 +21,6 @@ const Toggleable = ({ showText, hideText, children }) => {
       </span>
     </span>
   )
-}
+})
 
 export default Toggleable

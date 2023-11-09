@@ -1,14 +1,19 @@
+import { useState } from 'react'
 import Field from "./Field"
 
-const BlogForm = ({ 
-  handleSubmit,
-  url,
-  title,
-  author,
-  handleChangeUrl,
-  handleChangeTitle,
-  handleChangeAuthor,
-}) => {
+const BlogForm = ({ handleAddBlog}) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    handleAddBlog({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
 	return (
 		<div>
 			<h1>create new blog</h1>
@@ -16,17 +21,17 @@ const BlogForm = ({
         <Field 
           name='Title'
           value={title}
-          handleChange={handleChangeTitle}
+          handleChange={setTitle}
         />
         <Field 
           name='author'
           value={author}
-          handleChange={handleChangeAuthor}
+          handleChange={setAuthor}
         />
         <Field 
           name='url'
           value={url}
-          handleChange={handleChangeUrl}
+          handleChange={setUrl}
         />
         <button type='submit'>create</button>
       </form>

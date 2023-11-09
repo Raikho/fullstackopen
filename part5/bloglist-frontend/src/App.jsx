@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './services/storage'
@@ -12,17 +11,10 @@ import Toggleable from './components/Toggleable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState({ status: 'clear', text: ''})
+  const blogFormRef = useRef()
 
-  const USERNAME = 'bob_smith' // debug
-  const PASSWORD = 'bob_smith_1234' // debug
- 
   useEffect(() => {
     const item = storage.load('loggedBlogappUser')
     if (item) {
@@ -35,20 +27,17 @@ const App = () => {
       .then(blogs => setBlogs(blogs))
   }, [])
 
-  const handleLogin = async event => {
-    event.preventDefault()
-
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({ 
-        username: USERNAME, // debug
-        password: PASSWORD, // debug
+        username: username || 'bob_smith', // debug
+        password: password || 'bob_smith_1234', // debug
       })
       setUser(user)
       storage.save('loggedBlogappUser', user)
-      setUsername('')
-      setPassword('')
       sendTempMessage('success', `User ${user.username} successfully logged in`)
-    } catch (exception) {
+    } 
+    catch (exception) {
       sendTempMessage('error', `wrong username or password`)
       console.log('ERROR: ', exception.message)
     }
@@ -64,16 +53,29 @@ const App = () => {
     setUser(null)
   }
 
-  const handleAddBlog = async event => {
-    event.preventDefault()
-
+  const addBlog = async blogObject => {
     try {
-      const obj = { title, author, url }
-      const blog = await blogService.create(obj)
+      const blog = await blogService.create(blogObject)
+      console.log('created blog:', blog)
       setBlogs(blogs.concat({ ...blog, user }))
-      sendTempMessage('success', `a new blog "${blog.title}" by ${author} added`)
-    } catch (exception) {
+      sendTempMessage('success', `a new blog "${blog.title}" by ${blog.author} added`)
+      blogFormRef.current.toggleVisibility()
+    } 
+    catch (exception) {
       sendTempMessage('error', `blog was not able to be added, ${exception.message}`)
+      console.log('ERROR: ', exception.message)
+    }
+  }
+
+  const updateBlog = async blogObject => {
+    try {
+      const blog = await blogService.update(blogObject)
+      console.log('updated blog:', blog)
+      setBlogs(blogs.map(b => (b.id !== blog.id) ? b : blogObject))
+      sendTempMessage('success', `"${blog.title}" by ${blog.author} updated`)
+    } 
+    catch (exception) {
+      sendTempMessage('error', `blog was not able to be updated, ${exception.message}`)
       console.log('ERROR: ', exception.message)
     }
   }
@@ -83,32 +85,18 @@ const App = () => {
       <Notification message={message} />
       {
         (user === null) ?
-        <LoginForm
-          handleSubmit={handleLogin}
-          username={username}
-          handleUsernameChange={setUsername}
-          password={password}
-          handlePasswordChange={setPassword}
-        /> :
+        <LoginForm handleLogin={handleLogin} /> :
         <div>
           <BlogHeader
             nameOfUser={user.name}
             handleLogout={handleLogout}
           />
-          <Toggleable showText='create new blog'>
-            <BlogForm
-              handleSubmit={handleAddBlog}
-              title={title}
-              handleChangeTitle={setTitle}
-              author={author}
-              handleChangeAuthor={setAuthor}
-              url={url}
-              handleChangeUrl={setUrl}
-            />
+          <Toggleable showText='create new blog' ref={blogFormRef}>
+            <BlogForm handleAddBlog={addBlog}/>
           </Toggleable>
           <br />
           <br />
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} handleUpdateBlog={updateBlog}/>
         </div>
       }
     </div>

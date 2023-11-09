@@ -5,8 +5,10 @@ import loginService from './services/login'
 import storage from './services/storage'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
-import BlogDisplay from './components/BlogDisplay'
+import BlogHeader from './components/BlogHeader'
+import BlogList from './components/BlogList'
 import Notification from './components/Notification'
+import Toggleable from './components/Toggleable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -89,11 +91,11 @@ const App = () => {
           handlePasswordChange={setPassword}
         /> :
         <div>
-          <BlogDisplay 
+          <BlogHeader
             nameOfUser={user.name}
-            blogs={blogs}
             handleLogout={handleLogout}
-          >
+          />
+          <Toggleable showText='new blog'>
             <BlogForm
               handleSubmit={handleAddBlog}
               title={title}
@@ -103,7 +105,8 @@ const App = () => {
               url={url}
               handleChangeUrl={setUrl}
             />
-          </BlogDisplay>
+          </Toggleable>
+          <BlogList blogs={blogs} />
         </div>
       }
     </div>

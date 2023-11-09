@@ -6,6 +6,7 @@ import storage from './services/storage'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import BlogDisplay from './components/BlogDisplay'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,6 +16,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState({ status: 'clear', text: ''})
 
   const USERNAME = 'bob_smith' // debug
   const PASSWORD = 'bob_smith_1234' // debug
@@ -25,6 +27,7 @@ const App = () => {
       setUser(item)
       blogService.setToken(item.token)
     }
+
     blogService
       .getAll()
       .then(blogs => setBlogs(blogs))
@@ -42,10 +45,16 @@ const App = () => {
       storage.save('loggedBlogappUser', user)
       setUsername('')
       setPassword('')
-      console.log('successfully logged in')
+      sendTempMessage('success', `User ${user.username} successfully logged in`)
     } catch (exception) {
+      sendTempMessage('error', `wrong username or password`)
       console.log('ERROR: ', exception.message)
     }
+  }
+
+  const sendTempMessage = (status, text) => {
+    setMessage({ status, text })
+    setTimeout(() => setMessage({ status: 'clear', text: '' }), 3000)
   }
 
   const handleLogout = () => {
@@ -58,16 +67,18 @@ const App = () => {
 
     try {
       const obj = { title, author, url }
-      const response = await blogService.create(obj)
-      setBlogs(blogs.concat(response))
-      console.log('added new blog', response)
+      const blog = await blogService.create(obj)
+      setBlogs(blogs.concat(blog))
+      sendTempMessage('success', `a new blog "${blog.title}" by ${author} added`)
     } catch (exception) {
+      sendTempMessage('error', `blog was not able to be added, ${exception.message}`)
       console.log('ERROR: ', exception.message)
     }
   }
 
   return (
     <div>
+      <Notification message={message} />
       {
         (user === null) ?
         <LoginForm

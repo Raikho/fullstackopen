@@ -95,7 +95,7 @@ const App = () => {
             nameOfUser={user.name}
             handleLogout={handleLogout}
           />
-          <Toggleable showText='new blog'>
+          <Toggleable showText='create new blog'>
             <BlogForm
               handleSubmit={handleAddBlog}
               title={title}
@@ -106,6 +106,8 @@ const App = () => {
               handleChangeUrl={setUrl}
             />
           </Toggleable>
+          <br />
+          <br />
           <BlogList blogs={blogs} />
         </div>
       }

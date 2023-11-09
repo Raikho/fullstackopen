@@ -11,7 +11,7 @@ const BlogForm = ({
 }) => {
 	return (
 		<div>
-			<h1>create new</h1>
+			<h1>create new blog</h1>
       <form onSubmit={handleSubmit}>
         <Field 
           name='Title'

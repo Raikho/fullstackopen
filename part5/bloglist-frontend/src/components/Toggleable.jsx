@@ -8,15 +8,15 @@ const Toggleable = ({ showText, hideText, children }) => {
   const toggleVisibility = () => setVisible(!visible)
 
   return (
-    <div>
+    <span>
       <button className={hideWhenVisible} onClick={toggleVisibility}>
         {showText || 'show'}
       </button>
-      <div className={showWhenVisible}>
-        {children}
+      <span className={showWhenVisible}>
         <button onClick={toggleVisibility}>{hideText || 'cancel'}</button>
-      </div>
-    </div>
+        {children}
+      </span>
+    </span>
   )
 }
 

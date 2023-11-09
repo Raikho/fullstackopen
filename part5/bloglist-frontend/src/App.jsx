@@ -55,15 +55,16 @@ const App = () => {
 
   const handleAddBlog = async event => {
     event.preventDefault()
-    const obj = { title, author, url }
-    console.log('adding blog...', obj)
-  }
 
-  const blogForm = () => (
-    <div>
-      <div>logged in as {user.username}</div>
-    </div>
-  )
+    try {
+      const obj = { title, author, url }
+      const response = await blogService.create(obj)
+      setBlogs(blogs.concat(response))
+      console.log('added new blog', response)
+    } catch (exception) {
+      console.log('ERROR: ', exception.message)
+    }
+  }
 
   return (
     <div>
@@ -76,21 +77,24 @@ const App = () => {
           password={password}
           handlePasswordChange={setPassword}
         /> :
-        <BlogDisplay 
-          nameOfUser={user.name}
-          blogs={blogs}
-          handleLogout={handleLogout}
-        />
+        <div>
+          <BlogDisplay 
+            nameOfUser={user.name}
+            blogs={blogs}
+            handleLogout={handleLogout}
+          >
+            <BlogForm
+              handleSubmit={handleAddBlog}
+              title={title}
+              handleChangeTitle={setTitle}
+              author={author}
+              handleChangeAuthor={setAuthor}
+              url={url}
+              handleChangeUrl={setUrl}
+            />
+          </BlogDisplay>
+        </div>
       }
-      <BlogForm
-        handleSubmit={handleAddBlog}
-        title={title}
-        handleChangeTitle={setTitle}
-        author={author}
-        handleChangeAuthor={setAuthor}
-        url={url}
-        handleChangeUrl={setUrl}
-      />
     </div>
   )
 }

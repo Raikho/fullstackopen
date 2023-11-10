@@ -11,12 +11,12 @@ const inputBlog = {
 }
 
 describe('<BlogForm />', () => {
-	let mockHandler
+	let addBlog
 	let container
 
 	beforeEach(() => {
-		mockHandler = jest.fn()
-		container = render(<BlogForm handleAddBlog={mockHandler} />).container
+		addBlog = jest.fn()
+		container = render(<BlogForm handleAddBlog={addBlog} />).container
 	})
 
 	test('renders', async () => {
@@ -36,7 +36,7 @@ describe('<BlogForm />', () => {
 		await user.type(urlInput, inputBlog.url)
 		await user.click(createButton)
 
-		expect(mockHandler.mock.calls).toHaveLength(1)
-		expect(mockHandler.mock.calls[0][0]).toEqual(inputBlog)
+		expect(addBlog.mock.calls).toHaveLength(1)
+		expect(addBlog.mock.calls[0][0]).toEqual(inputBlog)
 	})
 })

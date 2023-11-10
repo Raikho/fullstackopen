@@ -13,7 +13,7 @@ const BlogList = ({
 	})
 
 	return (
-		<div>
+		<ul>
 			{sortedBlogs.map(blog => (
 				<Blog
 					key={blog.id}
@@ -22,7 +22,7 @@ const BlogList = ({
 					handleUpdateBlog={handleUpdateBlog}
 					handleRemoveBlog={handleRemoveBlog}
 				/>))}
-		</div>
+		</ul>
 	)
 }
 

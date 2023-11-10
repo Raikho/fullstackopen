@@ -1,17 +1,6 @@
 import Toggleable from './Toggleable'
 
 const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
-	const blogStyle = {
-		padding: '5px',
-		border: '1px solid black',
-		margin: '5px',
-	}
-	const removeStyle = {
-		backgroundColor: 'slateblue',
-		color: 'white',
-		borderRadius: '4px',
-	}
-
 	const likeBlog = () => {
 		const updatedBlog = { ...blog, likes: blog.likes + 1 }
 		handleUpdateBlog(updatedBlog)
@@ -23,8 +12,10 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 	}
 
 	return (
-		<div style={blogStyle}>
-			{blog.title} {blog.author}
+		<li className='blog'>
+			<span>{blog.title}</span>
+			<span> </span>
+			<span>{blog.author}</span>
 			<Toggleable showText='view' hideText='hide'>
 				<div>{blog.url}</div>
 				<div>
@@ -33,11 +24,11 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 				</div>
 				<div>{blog.user.username}</div>
 				{(user.username === blog.user.username) ?
-					<button style={removeStyle} onClick={removeBlog}>remove</button> :
+					<button className='remove' onClick={removeBlog}>remove</button> :
 					null
 				}
 			</Toggleable>
-		</div>
+		</li>
 	)
 }
 

@@ -22,8 +22,11 @@ beforeAll(() => {
 afterAll(() => confirmSpy.mockRestore())
 
 describe('<Blog />', () => {
+	let handleUpdate
+
 	beforeEach(() => {
-		render(<Blog blog={blog} user={user1} />)
+		handleUpdate = jest.fn()
+		render(<Blog blog={blog} user={user1} handleUpdateBlog={handleUpdate}/>)
 	})
 
 	test('show only title and author initially', () => {
@@ -52,6 +55,15 @@ describe('<Blog />', () => {
 		expect(author).toBeVisible()
 		expect(url).toBeVisible()
 		expect(likes).toBeVisible()
+	})
+
+	test('calls event handler twice when like clicked twice', async () => {
+		const user = userEvent.setup()
+		const likeButton = screen.getByText('like')
+		await user.click(likeButton)
+		await user.click(likeButton)
+
+		expect(handleUpdate.mock.calls).toHaveLength(2)
 	})
 })
 

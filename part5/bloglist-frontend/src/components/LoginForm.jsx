@@ -1,5 +1,6 @@
-import { useState } from "react"
-import Field from "./Field"
+import PropTypes from'prop-types'
+import { useState } from 'react'
+import Field from './Field'
 
 const LoginForm = ({ handleLogin }) => {
 	const [username, setUsername] = useState('')
@@ -13,24 +14,28 @@ const LoginForm = ({ handleLogin }) => {
 	}
 
 	return (
-	  <div>
-		<h1>log in to application</h1>
-		<form onSubmit={handleSubmit}>
-			<Field 
-				name='username'
-				value={username}
-				handleChange={setUsername}
-			/>
-			<Field 
-				name='password'
-				type='password'
-				value={password}
-				handleChange={setPassword}
-			/>
-		  <button type="submit">login</button>
-		</form>
-	  </div>
+		<div>
+			<h1>log in to application</h1>
+			<form onSubmit={handleSubmit}>
+				<Field
+					name='username'
+					value={username}
+					handleChange={setUsername}
+				/>
+				<Field
+					name='password'
+					type='password'
+					value={password}
+					handleChange={setPassword}
+				/>
+				<button type="submit">login</button>
+			</form>
+		</div>
 	)
-  }
+}
+
+LoginForm.propTypes = {
+	handleLogin: PropTypes.func.isRequired,
+}
 
 export default LoginForm

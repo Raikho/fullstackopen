@@ -21,11 +21,38 @@ beforeAll(() => {
 })
 afterAll(() => confirmSpy.mockRestore())
 
+describe('<Blog />', () => {
+	beforeEach(() => {
+		render(<Blog blog={blog} user={user1} />)
+	})
 
-test('renders content', () => {
-	render(<Blog blog={blog} user={user1} />)
-	const element = screen.getByText('The Book Title')
-	expect(element).toBeDefined()
+	test('show only title and author initially', () => {
+		const title = screen.getByText(blog.title)
+		const author = screen.getByText(blog.author)
+		const url = screen.getByText(blog.url)
+		const likes = screen.getByText(`likes ${blog.likes}`)
+
+		expect(title).toBeVisible()
+		expect(author).toBeVisible()
+		expect(url).not.toBeVisible()
+		expect(likes).not.toBeVisible()
+	})
+
+	test('show everything after click show', async () => {
+		const title = screen.getByText(blog.title)
+		const author = screen.getByText(blog.author)
+		const url = screen.getByText(blog.url)
+		const likes = screen.getByText(`likes ${blog.likes}`)
+
+		const user = userEvent.setup()
+		const showButton = screen.getByText('view')
+		await user.click(showButton)
+
+		expect(title).toBeVisible()
+		expect(author).toBeVisible()
+		expect(url).toBeVisible()
+		expect(likes).toBeVisible()
+	})
 })
 
 describe('remove button', () => {

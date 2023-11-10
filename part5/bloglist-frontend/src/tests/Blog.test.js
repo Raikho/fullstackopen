@@ -2,7 +2,7 @@ import React from 'react'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Blog from './Blog'
+import Blog from '../components/Blog'
 
 const user1 =  { username: 'Author_Username' }
 const user2 = { username: 'Author_Username_2' }

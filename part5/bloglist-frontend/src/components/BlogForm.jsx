@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Field from './Field'
 
-const BlogForm = ({ handleAddBlog}) => {
+const BlogForm = ({ handleAddBlog }) => {
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
@@ -19,7 +19,7 @@ const BlogForm = ({ handleAddBlog}) => {
 			<h1>create new blog</h1>
 			<form onSubmit={handleSubmit}>
 				<Field
-					name='Title'
+					name='title'
 					value={title}
 					handleChange={setTitle}
 				/>

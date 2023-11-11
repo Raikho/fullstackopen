@@ -16,7 +16,9 @@ const App = () => {
 	const blogFormRef = useRef()
 
 	useEffect(() => {
+		storage.remove('loggedBlogappUser')
 		const item = storage.load('loggedBlogappUser')
+		console.log('anything loaded:', item)
 		if (item) {
 			setUser(item)
 			blogService.setToken(item.token)
@@ -30,11 +32,13 @@ const App = () => {
 	const handleLogin = async (username, password) => {
 		try {
 			const user = await loginService.login({
-				username: username || 'bob_smith', // debug
-				password: password || 'bob_smith_1234', // debug
+				username, //: username || 'bob_smith', // debug
+				password, //: password || 'bob_smith_1234', // debug
 			})
+			console.log('current user received is', user)
 			setUser(user)
-			storage.save('loggedBlogappUser', user)
+			blogService.setToken(user.token)
+			// storage.save('loggedBlogappUser', user) // undo
 			sendTempMessage('success', `User ${user.username} successfully logged in`)
 		}
 		catch (exception) {

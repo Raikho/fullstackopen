@@ -19,16 +19,18 @@ const LoginForm = ({ handleLogin }) => {
 			<form onSubmit={handleSubmit}>
 				<Field
 					name='username'
+					id='username'
 					value={username}
 					handleChange={setUsername}
 				/>
 				<Field
 					name='password'
+					id='password'
 					type='password'
 					value={password}
 					handleChange={setPassword}
 				/>
-				<button type="submit">login</button>
+				<button id='login-button' type='submit'>login</button>
 			</form>
 		</div>
 	)

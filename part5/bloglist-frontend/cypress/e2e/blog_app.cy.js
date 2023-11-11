@@ -4,9 +4,21 @@ describe('Blog app', () => {
 		username: 'test_user',
 		password: 'test_pass',
 	}
-	const blog = {
+	const blog1 = {
 		title: 'A blog created by cypress',
 		author: 'Cypress Author',
+		url: 'www.CypressBlog.com',
+		likes: 0,
+	}
+	const blog2 = {
+		title: 'A second blog created by cypress',
+		author: 'Cypress Author',
+		url: 'www.CypressBlog.com',
+		likes: 0,
+	}
+	const blog3 = {
+		title: 'A third blog created by cypress',
+		author: 'Secondary Cypress Author',
 		url: 'www.CypressBlog.com',
 		likes: 0,
 	}
@@ -48,24 +60,30 @@ describe('Blog app', () => {
 
 		it('a new blog can be created', function() {
 			cy.contains('create new blog').click()
-			cy.get('#title-input').type(blog.title)
-			cy.get('#author-input').type(blog.author)
-			cy.get('#url-input').type(blog.url)
+			cy.get('#title-input').type(blog1.title)
+			cy.get('#author-input').type(blog1.author)
+			cy.get('#url-input').type(blog1.url)
 			cy.get('#create-button').click()
-			cy.contains('A blog created by cypress')
+			cy.get('html').should('contain', blog1.title)
 		})
 
-		describe('The new blog', function() {
+		describe('and several notes exist', function() {
 			beforeEach(function() {
-				cy.createBlog(blog)
+				cy.createBlog(blog1)
+				cy.createBlog(blog2)
+				cy.createBlog(blog3)
 			})
 
-			it.only('can be liked', function() {
-				const blogText = blog.title.concat(' ', blog.author)
-				cy.contains(blogText).find('.show-button').click()
-				cy.contains(blogText).find('.likes').contains('0')
-				cy.contains(blogText).find('.like-button').click()
-				cy.contains(blogText).find('.likes').contains('1')
+			it('one of those can be liked', function() {
+				const blogText = blog2.title.concat(' ', blog2.author)
+				cy.contains(blogText).as('blog2')
+
+				cy.get('@blog2').find('.show-button').click()
+				cy.get('@blog2').find('.likes')
+					.should('contain', blog1.likes)
+				cy.get('@blog2').find('.like-button').click()
+				cy.get('@blog2').find('.likes')
+					.should('contain', blog1.likes + 1)
 			})
 		})
 	})

@@ -1,6 +1,13 @@
 describe('Blog app', () => {
+	const user = {
+		name: 'Mateen',
+		username: 'test_user',
+		password: 'test_pass',
+	}
 
 	beforeEach(function() {
+		cy.request('POST', 'http://localhost:3003/api/testing/reset')
+		cy.request('POST', 'http://localhost:3003/api/users/', user)
 		cy.visit('http://localhost:5173')
 	})
 
@@ -9,17 +16,17 @@ describe('Blog app', () => {
 	})
 
 	it('user can login', function() {
-		cy.get('#username').type('root')
-		cy.get('#password').type('secret')
+		cy.get('#username').type(user.username)
+		cy.get('#password').type(user.password)
 		cy.get('#login-button').click()
 
-		cy.contains('Root User logged in')
+		cy.contains(`${user.name} logged in`)
 	})
 
 	describe('when logged in', function() {
 		beforeEach(function() {
-			cy.get('#username').type('root')
-			cy.get('#password').type('secret')
+			cy.get('#username').type(user.username)
+			cy.get('#password').type(user.password)
 			cy.get('#login-button').click()
 		})
 

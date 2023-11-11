@@ -8,19 +8,20 @@ describe('Blog app', () => {
 		title: 'A blog created by cypress',
 		author: 'Cypress Author',
 		url: 'www.CypressBlog.com',
+		likes: 0,
 	}
 
 	beforeEach(function() {
-		cy.request('POST', 'http://localhost:3003/api/testing/reset')
-		cy.request('POST', 'http://localhost:3003/api/users/', user)
-		cy.visit('http://localhost:5173')
+		cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
+		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+		cy.visit('')
 	})
 
 	it('front page can be opened', function() {
 		cy.contains('log in to application')
 	})
 
-	it.only('login fails with wrong credentials', function() {
+	it('login fails with wrong credentials', function() {
 		cy.get('#username').type('x')
 		cy.get('#password').type('x')
 		cy.get('#login-button').click()
@@ -42,9 +43,7 @@ describe('Blog app', () => {
 
 	describe('when logged in', function() {
 		beforeEach(function() {
-			cy.get('#username').type(user.username)
-			cy.get('#password').type(user.password)
-			cy.get('#login-button').click()
+			cy.login(user)
 		})
 
 		it('a new blog can be created', function() {
@@ -58,14 +57,10 @@ describe('Blog app', () => {
 
 		describe('The new blog', function() {
 			beforeEach(function() {
-				cy.contains('create new blog').click()
-				cy.get('#title-input').type(blog.title)
-				cy.get('#author-input').type(blog.author)
-				cy.get('#url-input').type(blog.url)
-				cy.get('#create-button').click()
+				cy.createBlog(blog)
 			})
 
-			it('can be liked', function() {
+			it.only('can be liked', function() {
 				const blogText = blog.title.concat(' ', blog.author)
 				cy.contains(blogText).find('.show-button').click()
 				cy.contains(blogText).find('.likes').contains('0')

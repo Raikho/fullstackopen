@@ -13,11 +13,11 @@ const Toggleable = forwardRef((props, refs) => {
 
 	return (
 		<span>
-			<button style={hideWhenVisible} onClick={toggleVisibility}>
+			<button style={hideWhenVisible} onClick={toggleVisibility} className='show-button'>
 				{showText || 'show'}
 			</button>
 			<span style={showWhenVisible} className='toggleableContent'>
-				<button onClick={toggleVisibility}>{hideText || 'cancel'}</button>
+				<button onClick={toggleVisibility} className='hide-button'>{hideText || 'cancel'}</button>
 				{children}
 			</span>
 		</span>

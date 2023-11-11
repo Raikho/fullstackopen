@@ -19,8 +19,9 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 			<Toggleable showText='view' hideText='hide'>
 				<div>{blog.url}</div>
 				<div>
-					likes {blog.likes}
-					<button onClick={likeBlog}>like</button>
+					<span>likes </span>
+					<span className='likes'>{blog.likes}</span>
+					<button onClick={likeBlog} className='like-button'>like</button>
 				</div>
 				<div>{blog.user.username}</div>
 				{(user.username === blog.user.username) ?

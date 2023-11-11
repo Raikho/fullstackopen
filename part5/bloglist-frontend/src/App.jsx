@@ -16,9 +16,7 @@ const App = () => {
 	const blogFormRef = useRef()
 
 	useEffect(() => {
-		storage.remove('loggedBlogappUser')
 		const item = storage.load('loggedBlogappUser')
-		console.log('anything loaded:', item)
 		if (item) {
 			setUser(item)
 			blogService.setToken(item.token)
@@ -38,7 +36,7 @@ const App = () => {
 			console.log('current user received is', user)
 			setUser(user)
 			blogService.setToken(user.token)
-			// storage.save('loggedBlogappUser', user) // undo
+			storage.save('loggedBlogappUser', user) // undo
 			sendTempMessage('success', `User ${user.username} successfully logged in`)
 		}
 		catch (exception) {

@@ -6,6 +6,8 @@ const App = () => {
 
   const vote = (id) => {
     console.log('vote', id)
+    const action = {type: 'VOTE', payload: { id }}
+    dispatch(action)
   }
 
   return (
@@ -13,9 +15,7 @@ const App = () => {
       <h2>Anecdotes</h2>
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
+          <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
             <button onClick={() => vote(anecdote.id)}>vote</button>

@@ -13,7 +13,7 @@ const BlogList = ({
 	})
 
 	return (
-		<ul>
+		<ul className='blog-container'>
 			{sortedBlogs.map(blog => (
 				<Blog
 					key={blog.id}

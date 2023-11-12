@@ -47,7 +47,5 @@ Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
 			headers: {
 				'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
 			}
-		}).then(res => {
-			cy.visit('')
 		})
 })

@@ -30,8 +30,8 @@ const App = () => {
 	const handleLogin = async (username, password) => {
 		try {
 			const user = await loginService.login({
-				username, //: username || 'bob_smith', // debug
-				password, //: password || 'bob_smith_1234', // debug
+				username,
+				password,
 			})
 			console.log('current user received is', user)
 			setUser(user)

@@ -19,13 +19,13 @@ describe('Blog app', () => {
 		title: 'Second blog created by cypress',
 		author: 'Cypress Author',
 		url: 'www.CypressBlog.com',
-		likes: 0,
+		likes: 2,
 	}
 	const blog3 = {
 		title: 'Third blog created by cypress',
 		author: 'Secondary Cypress Author',
 		url: 'www.CypressBlog.com',
-		likes: 0,
+		likes: 4,
 	}
 
 	beforeEach(function() {
@@ -83,13 +83,14 @@ describe('Blog app', () => {
 			cy.get('.blog').should('contain', blog1.title)
 		})
 
-		describe.only('and several notes by diff users exist', function() {
+		describe('and several notes by diff users exist', function() {
 			beforeEach(function() {
 				cy.createBlog(blog1)
 				cy.createBlog(blog2)
 				cy.get('#logout-button').click()
 				cy.login(user2)
 				cy.createBlog(blog3)
+				cy.visit('')
 			})
 
 			it('one of those can be liked', function() {
@@ -98,10 +99,10 @@ describe('Blog app', () => {
 
 				cy.get('@blog2').find('.show-button').click()
 				cy.get('@blog2').find('.likes')
-					.should('contain', blog1.likes)
+					.should('contain', blog2.likes)
 				cy.get('@blog2').find('.like-button').click()
 				cy.get('@blog2').find('.likes')
-					.should('contain', blog1.likes + 1)
+					.should('contain', blog2.likes + 1)
 			})
 
 			it('user can delete their own blog', function() {
@@ -111,15 +112,21 @@ describe('Blog app', () => {
 				cy.get('@blog3').should('not.exist')
 			})
 
-			it.only('user cant see delete button of unowned blogs', function() {
+			it('user cant see delete button of unowned blogs', function() {
 				cy.contains(blog2.title.concat(' ', blog2.author)).as('blog2')
 				cy.get('@blog2').find('.show-button').click()
 				cy.get('@blog2').find('.like-button').should('exist')
 				cy.get('@blog2').find('.remove-button').should('not.exist')
 			})
-		})
 
-		// TODO: blogs are ordered by most likes
+			it('blogs are listed by most liked', function() {
+				cy.get('.blog-container>.blog').should('exist').as('blogs')
+				cy.get('@blogs').should('exist')
+				cy.get('@blogs').eq(0).should('contain', blog3.title)
+				cy.get('@blogs').eq(1).should('contain', blog2.title)
+				cy.get('@blogs').eq(2).should('contain', blog1.title)
+			})
+		})
 	})
 
 })

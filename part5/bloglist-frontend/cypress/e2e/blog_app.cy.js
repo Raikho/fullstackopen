@@ -1,8 +1,13 @@
 describe('Blog app', () => {
-	const user = {
-		name: 'Mateen',
-		username: 'test_user',
-		password: 'test_pass',
+	const user1 = {
+		name: 'Bob Smith',
+		username: 'test_user_1',
+		password: 'test_pass_1',
+	}
+	const user2 = {
+		name: 'Jane Doe',
+		username: 'test_user_2',
+		password: 'test_pass_2',
 	}
 	const blog1 = {
 		title: 'First blog created by cypress',
@@ -25,7 +30,8 @@ describe('Blog app', () => {
 
 	beforeEach(function() {
 		cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
-		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user)
+		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user1)
+		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user2)
 		cy.visit('')
 	})
 
@@ -37,11 +43,11 @@ describe('Blog app', () => {
 
 	describe('Login', function() {
 		it('succeeds with correct credentials', function() {
-			cy.get('#username').type(user.username)
-			cy.get('#password').type(user.password)
+			cy.get('#username').type(user1.username)
+			cy.get('#password').type(user1.password)
 			cy.get('#login-button').click()
 
-			cy.get('html').should('contain', `${user.name} logged in`)
+			cy.get('html').should('contain', `${user1.name} logged in`)
 		})
 
 		it('fails with wrong credentials', function() {
@@ -53,13 +59,18 @@ describe('Blog app', () => {
 				.should('contain', 'wrong username or password')
 				.and('have.css', 'color', 'rgb(255, 0, 0)')
 				.and('have.css', 'border-style', 'solid')
-			cy.get('html').should('not.contain', `${user.name} logged in`)
+			cy.get('html').should('not.contain', `${user1.name} logged in`)
 		})
 	})
 
 	describe('when logged in', function() {
 		beforeEach(function() {
-			cy.login(user)
+			cy.login(user1)
+		})
+
+		it('can logout', function() {
+			cy.get('#logout-button').click()
+			cy.get('html').should('contain', 'log in to application')
 		})
 
 		it('a blog can be created', function() {
@@ -72,14 +83,16 @@ describe('Blog app', () => {
 			cy.get('.blog').should('contain', blog1.title)
 		})
 
-		describe('and several notes exist', function() {
+		describe.only('and several notes exist', function() {
 			beforeEach(function() {
 				cy.createBlog(blog1)
 				cy.createBlog(blog2)
+				cy.get('#logout-button').click()
+				cy.login(user2)
 				cy.createBlog(blog3)
 			})
 
-			it.only('one of those can be liked', function() {
+			it('one of those can be liked', function() {
 				const blogText = blog2.title.concat(' ', blog2.author)
 				cy.contains(blogText).as('blog2')
 
@@ -91,6 +104,10 @@ describe('Blog app', () => {
 					.should('contain', blog1.likes + 1)
 			})
 		})
+
+		// TODO: User can delte their own blog
+		// TODO: Only blog creator can see delete button of a blog
+		// TODO: blogs are ordered by most likes
 	})
 
 })

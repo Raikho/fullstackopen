@@ -6,7 +6,7 @@ const BlogHeader = ({ nameOfUser, handleLogout }) => {
 			<h1>blogs</h1>
 			<div>
 				{nameOfUser} logged in
-				<button onClick={handleLogout}>logout</button>
+				<button onClick={handleLogout} id='logout-button'>logout</button>
 			</div>
 			<br />
 		</div>

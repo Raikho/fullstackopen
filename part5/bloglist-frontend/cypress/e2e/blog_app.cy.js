@@ -29,8 +29,10 @@ describe('Blog app', () => {
 		cy.visit('')
 	})
 
-	it('front page can be opened', function() {
-		cy.contains('log in to application')
+	it.only('Login form is shown', function() {
+		cy.get('html').should('contain', 'log in to application')
+		cy.get('#username').should('exist')
+		cy.get('#password').should('exist')
 	})
 
 	it('login fails with wrong credentials', function() {

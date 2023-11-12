@@ -104,16 +104,21 @@ describe('Blog app', () => {
 					.should('contain', blog1.likes + 1)
 			})
 
-			it('user2 can delete their own blog', function() {
+			it('user can delete their own blog', function() {
 				cy.contains(blog3.title.concat(' ', blog3.author)).as('blog3')
 				cy.get('@blog3').find('.show-button').click()
 				cy.get('@blog3').find('.remove-button').click()
 				cy.get('@blog3').should('not.exist')
 			})
+
+			it.only('user cant see delete button of unowned blogs', function() {
+				cy.contains(blog2.title.concat(' ', blog2.author)).as('blog2')
+				cy.get('@blog2').find('.show-button').click()
+				cy.get('@blog2').find('.like-button').should('exist')
+				cy.get('@blog2').find('.remove-button').should('not.exist')
+			})
 		})
 
-		// TODO: User can delte their own blog
-		// TODO: Only blog creator can see delete button of a blog
 		// TODO: blogs are ordered by most likes
 	})
 

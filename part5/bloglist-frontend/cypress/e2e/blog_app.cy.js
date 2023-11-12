@@ -5,19 +5,19 @@ describe('Blog app', () => {
 		password: 'test_pass',
 	}
 	const blog1 = {
-		title: 'A blog created by cypress',
+		title: 'First blog created by cypress',
 		author: 'Cypress Author',
 		url: 'www.CypressBlog.com',
 		likes: 0,
 	}
 	const blog2 = {
-		title: 'A second blog created by cypress',
+		title: 'Second blog created by cypress',
 		author: 'Cypress Author',
 		url: 'www.CypressBlog.com',
 		likes: 0,
 	}
 	const blog3 = {
-		title: 'A third blog created by cypress',
+		title: 'Third blog created by cypress',
 		author: 'Secondary Cypress Author',
 		url: 'www.CypressBlog.com',
 		likes: 0,
@@ -62,7 +62,7 @@ describe('Blog app', () => {
 			cy.login(user)
 		})
 
-		it.only('a blog can be created', function() {
+		it('a blog can be created', function() {
 			cy.contains('create new blog').click()
 			cy.get('#title-input').type(blog1.title)
 			cy.get('#author-input').type(blog1.author)
@@ -79,7 +79,7 @@ describe('Blog app', () => {
 				cy.createBlog(blog3)
 			})
 
-			it('one of those can be liked', function() {
+			it.only('one of those can be liked', function() {
 				const blogText = blog2.title.concat(' ', blog2.author)
 				cy.contains(blogText).as('blog2')
 

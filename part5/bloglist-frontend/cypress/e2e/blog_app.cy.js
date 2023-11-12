@@ -83,7 +83,7 @@ describe('Blog app', () => {
 			cy.get('.blog').should('contain', blog1.title)
 		})
 
-		describe.only('and several notes exist', function() {
+		describe.only('and several notes by diff users exist', function() {
 			beforeEach(function() {
 				cy.createBlog(blog1)
 				cy.createBlog(blog2)
@@ -102,6 +102,13 @@ describe('Blog app', () => {
 				cy.get('@blog2').find('.like-button').click()
 				cy.get('@blog2').find('.likes')
 					.should('contain', blog1.likes + 1)
+			})
+
+			it('user2 can delete their own blog', function() {
+				cy.contains(blog3.title.concat(' ', blog3.author)).as('blog3')
+				cy.get('@blog3').find('.show-button').click()
+				cy.get('@blog3').find('.remove-button').click()
+				cy.get('@blog3').should('not.exist')
 			})
 		})
 

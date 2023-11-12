@@ -25,7 +25,7 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 				</div>
 				<div>{blog.user.username}</div>
 				{(user.username === blog.user.username) ?
-					<button className='remove' onClick={removeBlog}>remove</button> :
+					<button className='remove-button' onClick={removeBlog}>remove</button> :
 					null
 				}
 			</Toggleable>

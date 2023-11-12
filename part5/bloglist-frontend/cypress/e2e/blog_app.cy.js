@@ -36,7 +36,7 @@ describe('Blog app', () => {
 	})
 
 	describe('Login', function() {
-		it.only('succeeds with correct credentials', function() {
+		it('succeeds with correct credentials', function() {
 			cy.get('#username').type(user.username)
 			cy.get('#password').type(user.password)
 			cy.get('#login-button').click()
@@ -62,13 +62,14 @@ describe('Blog app', () => {
 			cy.login(user)
 		})
 
-		it('a new blog can be created', function() {
+		it.only('a blog can be created', function() {
 			cy.contains('create new blog').click()
 			cy.get('#title-input').type(blog1.title)
 			cy.get('#author-input').type(blog1.author)
 			cy.get('#url-input').type(blog1.url)
 			cy.get('#create-button').click()
-			cy.get('html').should('contain', blog1.title)
+
+			cy.get('.blog').should('contain', blog1.title)
 		})
 
 		describe('and several notes exist', function() {

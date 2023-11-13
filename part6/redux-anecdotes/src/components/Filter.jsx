@@ -5,7 +5,6 @@ const Filter = () => {
   const dispatch = useDispatch()
 
   const handleChange = event => {
-    event.preventDefault()
     const filter = event.target.value
     dispatch(filterChange(filter))
   }
@@ -13,10 +12,10 @@ const Filter = () => {
   const style = { marginBottom: 10 }
 
   return (
-    <form style={style}>
+    <div style={style}>
       <span>filter</span>
       <input onChange={handleChange} />
-    </form>
+    </div>
   )
 }
 

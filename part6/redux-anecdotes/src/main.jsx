@@ -3,17 +3,22 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import App from './App'
 import anecdoteReducer from './reducers/anecdoteReducer'
-import filterReducer from './reducers/anecdoteReducer'
+import filterReducer from './reducers/filterReducer'
 
 const reducer = combineReducers( {
   anecdotes: anecdoteReducer,
   filter: filterReducer,
 })
 
+
 const store = createStore(reducer)
+const printStore =  () => console.log('UPDATED STATE', store.getState()) // debug
+printStore() // debug
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />
   </Provider>
 )
+
+store.subscribe(printStore) // debug

@@ -34,9 +34,8 @@ export const createAnecdote = (content) => {
     }
 }
 
-export const voteAnecdote = (id) => {
-  return async (dispatch, getState) => {
-    const anecdote = getState().anecdotes.find(a => a.id === id)
+export const voteAnecdote = (anecdote) => {
+  return async (dispatch) => {
     const changedAnecdote = {...anecdote, votes: anecdote.votes + 1}
     const newAnecdote = await anecdoteService.replace(changedAnecdote)
     dispatch(replaceAnecdote(newAnecdote))

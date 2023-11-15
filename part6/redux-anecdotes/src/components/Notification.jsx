@@ -5,8 +5,10 @@ const Notification = () => {
   
   const style = {
     border: 'solid',
+    borderRadius: 4,
     padding: 10,
-    borderWidth: 1
+    borderWidth: 1,
+    backgroundColor: 'lightgray',
   }
   
   if (notification === null)

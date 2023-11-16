@@ -1,4 +1,8 @@
-const Notification = ({ note }) => {
+import { useNoteValue } from "../NoteContext"
+
+const Notification = () => {
+  const note = useNoteValue()
+
   const style = {
     border: 'solid',
     padding: 10,

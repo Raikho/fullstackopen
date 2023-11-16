@@ -2,23 +2,11 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import anecdoteService from './requests'
-import { useReducer } from 'react'
-
-const noteReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET':
-      return action.payload
-    case 'REMOVE':
-      return ''
-    default:
-      return state
-  }
-}
-
+import NoteContext from './NoteContext'
+import { useContext } from 'react'
 
 const App = () => {
-	const [note, noteDispatch] = useReducer(noteReducer, '')
-
+	const [note, noteDispatch] = useContext(NoteContext)
 	const queryClient = useQueryClient()
 
 	const result = useQuery({
@@ -67,8 +55,8 @@ const App = () => {
 	return (
 		<div>
 			<h3>Anecdote app</h3>
-			<Notification note={note} />
-			<AnecdoteForm dispatch={noteDispatch}/>
+			<Notification />
+			<AnecdoteForm />
 			{toDisplay()}
 		</div>
 	)

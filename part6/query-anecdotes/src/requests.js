@@ -20,4 +20,10 @@ const replace = object => {
     .then(res => res.data)
 }
 
-export default { getAll, create, replace }
+const remove = id => {
+  return axios
+    .delete(`${baseUrl}/${id}`)
+    .then(res => res.data)
+}
+
+export default { getAll, create, replace, remove}

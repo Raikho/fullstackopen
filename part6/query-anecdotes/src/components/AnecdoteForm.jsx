@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import anecdoteService from '../requests'
-import { useContext } from "react"
-import NoteContext from "../NoteContext"
+import { useNoteDispatch } from "../NoteContext"
 
 const AnecdoteForm = () => {
-  const [note, noteDispatch] = useContext(NoteContext)
+  const noteDispatch = useNoteDispatch()
 
   const queryClient = useQueryClient()
 

@@ -30,7 +30,7 @@ export const useNoteValue = () => {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useNoteReducer = () => {
+export const useNoteDispatch = () => {
   const valueAndDispatch = useContext(NoteContext)
   return valueAndDispatch[1]
 }

@@ -9,8 +9,17 @@ const AnecdoteForm = () => {
 
 	const newAnecdoteMutation = useMutation({
     mutationFn: anecdoteService.create,
-    onSuccess: () => {
+    onSuccess: anecdote => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+      
+      const msg = `created note '${anecdote.content}'`
+      noteDispatch({ type: 'SET', payload: msg })
+      setTimeout(() => noteDispatch({ type: 'REMOVE' }), 3000)
+    },
+    onError: (err) => {
+      const msg = err.response.data.error
+      noteDispatch({ type: 'SET', payload: msg })
+      setTimeout(() => noteDispatch({ type: 'REMOVE' }), 3000)
     },
   })
 
@@ -19,8 +28,6 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     
     newAnecdoteMutation.mutate({ content, votes: 0 })
-    noteDispatch({ type: 'SET', payload: `created note '${content}'` })
-    setTimeout(() => noteDispatch({ type: 'REMOVE' }), 3000)
     event.target.anecdote.value = ''
 }
 

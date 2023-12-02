@@ -28,7 +28,7 @@ const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(a => 
-        <li key={a.id} >
+        <li key={a.id}>
           <Link to={`/anecdotes/${a.id}`}>{a.content}</Link>
         </li>
       )}
@@ -51,7 +51,7 @@ const About = () => (
 )
 
 const Footer = () => (
-  <div>
+  <div className='footer'>
     Anecdote app for <a href='https://fullstackopen.com/'>Full Stack Open</a>.
 
     See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js</a> for the source code.
@@ -142,6 +142,7 @@ const App = () => {
       <Menu />
       <Routes>
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path='/anecdotes' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/about' element={<About />} />
         <Route path='/create' element={<CreateNew addNew={addNew} />} />
         <Route path='/anecdotes/:id' element={<Anecdote anecdotes={anecdotes} />} />

@@ -74,7 +74,6 @@ const App = () => {
 
   const fetch = (e) => {
     e.preventDefault()
-    console.log('fetching...') // debug
     setName(nameInput.value)
   }
 

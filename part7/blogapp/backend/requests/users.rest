@@ -1,0 +1,40 @@
+@host = http://localhost:3003/api/users
+# @id = 654767e821f94531c334952d
+# @deleteId = 65476a18d78b70e1eae8b616
+###
+GET {{host}}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "username": "bob_smith",
+    "name": "Bob Smith",
+    "password": "bob_smith_1234"
+}
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "bob_smith",
+    "password": "bob_smith_1234"
+}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "name": "Jane Doe",
+    "password": "jane doe 1234"
+}
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "username": "no_password",
+    "name": "Jane Doe",
+    "password": "ab"
+}
+###

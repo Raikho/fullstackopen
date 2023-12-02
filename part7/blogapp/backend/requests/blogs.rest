@@ -1,0 +1,44 @@
+@host = http://localhost:3003/api/blogs
+@id = 654767e821f94531c334952d
+@deleteId = 654b2054da62091922950db4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU0OWYwMThiZmYyMTM5ZGE1YTYzNDg5IiwiaWF0IjoxNjk5NDEwNzQxfQ.cWT2gpNMHfpot86FlhxM14Hu4dr3pS_XNsZNgfI_WbA
+###
+GET {{host}}
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU0OWYwMThiZmYyMTM5ZGE1YTYzNDg5IiwiaWF0IjoxNjk5NDEwNzQxfQ.cWT2gpNMHfpot86FlhxM14Hu4dr3pS_XNsZNgfI_WbA
+###
+POST {{host}}
+Content-Type: application/json
+
+{
+    "title": "First Blog",
+    "author": "Bob Smith",
+    "url": "www.my_blog.com",
+    "likes": 4
+}
+### 
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU0OWYwMThiZmYyMTM5ZGE1YTYzNDg5IiwiaWF0IjoxNjk5NDEwNzQxfQ.cWT2gpNMHfpot86FlhxM14Hu4dr3pS_XNsZNgfI_WbA
+
+{
+    "title": "First Blog v5",
+    "author": "Bob Smith",
+    "url": "www.my_blog.com",
+    "likes": 4
+}
+###
+GET {{host}}/{{id}}
+###
+DELETE {{host}}/{{deleteId}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU0OWYwMThiZmYyMTM5ZGE1YTYzNDg5IiwiaWF0IjoxNjk5NDEwNzQxfQ.cWT2gpNMHfpot86FlhxM14Hu4dr3pS_XNsZNgfI_WbA
+###
+PUT {{host}}/{{id}}
+Content-Type: application/json
+
+{
+    "title": "First Blog v1",
+    "author": "Bob Smith",
+    "url": "www.my_blog.com",
+    "likes": 4
+}
+###

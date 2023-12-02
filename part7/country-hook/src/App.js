@@ -15,18 +15,38 @@ const useField = (type) => {
   }
 }
 
-const useCountry = (name) => {
-  const [country, setCountry] = useState(null)
+const useCountry = (inputName) => {
+  const [name, setName] = useState(null)
+  const [found, setFound] = useState(false)
+  const [data, setData] = useState(null)
 
-  useEffect(() => {})
+  useEffect(() => {
+    if (!inputName) return
 
-  return country
+    axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${inputName}`)
+      .then(res => {
+        setData({
+          name: res.data.name.common,
+          capital: res.data.capital[0],
+          population: res.data.population,
+          flag: res.data.flags.png,
+        })
+        setFound(true)
+      })
+      .catch(err => {
+        console.log('ERROR: ', err)
+        setFound(false)
+      })
+      .finally(() => setName(inputName))
+  }, [inputName])
+
+  return { name, found, data }
 }
 
 const Country = ({ country }) => {
-  if (!country) {
-    return <div>no country defined</div> // debug
-    // return null
+  if (!country.name) {
+    return null
   }
 
   if (!country.found) {
@@ -54,6 +74,7 @@ const App = () => {
 
   const fetch = (e) => {
     e.preventDefault()
+    console.log('fetching...') // debug
     setName(nameInput.value)
   }
 

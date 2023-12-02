@@ -88,6 +88,13 @@ const CreateNew = ({ addNew, setNote }) => {
     setTimeout(() => setNote(''), 5000)
   }
 
+  const handleClear = (e) => {
+    e.preventDefault()
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -95,7 +102,8 @@ const CreateNew = ({ addNew, setNote }) => {
         <div>content<input {...content} /></div>
         <div>author<input {...author} /></div>
         <div>url for more info<input {...info} /></div>
-        <button >create</button>
+        <button type='submit'>create</button>
+        <button onClick={handleClear}>clear</button>
       </form>
     </div>
   )

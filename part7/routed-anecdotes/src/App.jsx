@@ -99,9 +99,9 @@ const CreateNew = ({ addNew, setNote }) => {
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
-        <div>content<input {...content} /></div>
-        <div>author<input {...author} /></div>
-        <div>url for more info<input {...info} /></div>
+        <div>content<input {...content.atts} /></div>
+        <div>author<input {...author.atts} /></div>
+        <div>url for more info<input {...info.atts} /></div>
         <button type='submit'>create</button>
         <button onClick={handleClear}>clear</button>
       </form>

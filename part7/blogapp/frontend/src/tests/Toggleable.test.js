@@ -4,16 +4,17 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Toggleable from '../components/Toggleable'
 
-const child = (<div className='child'>child</div>)
+const child = <div className='child'>child</div>
 
 describe('<Toggleable />', () => {
 	let container
 
 	beforeEach(() => {
-		container = render (
+		container = render(
 			<Toggleable showText='show' hideText='hide'>
 				{child}
-			</Toggleable>).container
+			</Toggleable>
+		).container
 	})
 
 	test('renders its children', async () => {

@@ -4,14 +4,14 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from '../components/Blog'
 
-const user1 =  { username: 'Author_Username' }
+const user1 = { username: 'Author_Username' }
 const user2 = { username: 'Author_Username_2' }
 const blog = {
 	title: 'The Book Title',
 	author: 'Mr. Author',
 	url: 'www.ReadThisBook.com',
 	likes: 0,
-	user: user1
+	user: user1,
 }
 
 let confirmSpy
@@ -26,7 +26,7 @@ describe('<Blog />', () => {
 
 	beforeEach(() => {
 		handleUpdate = jest.fn()
-		render(<Blog blog={blog} user={user1} handleUpdateBlog={handleUpdate}/>)
+		render(<Blog blog={blog} user={user1} handleUpdateBlog={handleUpdate} />)
 	})
 
 	test('show only title and author initially', () => {
@@ -68,7 +68,7 @@ describe('<Blog />', () => {
 })
 
 describe('remove button', () => {
-	test('calls event handler once, sending blog info', async() => {
+	test('calls event handler once, sending blog info', async () => {
 		const mockHandler = jest.fn()
 		render(<Blog blog={blog} user={user1} handleRemoveBlog={mockHandler} />)
 
@@ -81,7 +81,7 @@ describe('remove button', () => {
 		expect(mockHandler.mock.calls[0][0]).toBe(blog)
 	})
 
-	test ('doesnt exist when user doesnt own blog', () => {
+	test('doesnt exist when user doesnt own blog', () => {
 		render(<Blog blog={blog} user={user2} />)
 		const removeButton = screen.queryByText('remove')
 		expect(removeButton).toBeNull()

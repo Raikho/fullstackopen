@@ -12,7 +12,7 @@ import Toggleable from './components/Toggleable'
 const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
-	const [message, setMessage] = useState({ status: 'clear', text: ''})
+	const [message, setMessage] = useState({ status: 'clear', text: '' })
 	const blogFormRef = useRef()
 
 	useEffect(() => {
@@ -22,7 +22,7 @@ const App = () => {
 			blogService.setToken(item.token)
 		}
 
-		blogService
+		blogService //
 			.getAll()
 			.then(blogs => setBlogs(blogs))
 	}, [])
@@ -38,8 +38,7 @@ const App = () => {
 			blogService.setToken(user.token)
 			storage.save('loggedBlogappUser', user) // undo
 			sendTempMessage('success', `User ${user.username} successfully logged in`)
-		}
-		catch (exception) {
+		} catch (exception) {
 			sendTempMessage('error', 'wrong username or password')
 			console.log('ERROR: ', exception.message)
 		}
@@ -62,8 +61,7 @@ const App = () => {
 			setBlogs(blogs.concat({ ...blog, user }))
 			sendTempMessage('success', `a new blog "${blog.title}" by ${blog.author} added`)
 			blogFormRef.current.toggleVisibility()
-		}
-		catch (exception) {
+		} catch (exception) {
 			sendTempMessage('error', `blog was not able to be added, ${exception.message}`)
 			console.log('ERROR: ', exception.message)
 		}
@@ -73,10 +71,9 @@ const App = () => {
 		try {
 			const blog = await blogService.update(blogObject)
 			console.log('updated blog:', blog)
-			setBlogs(blogs.map(b => (b.id !== blog.id) ? b : blogObject))
+			setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogObject)))
 			sendTempMessage('success', `"${blog.title}" by ${blog.author} updated`)
-		}
-		catch (exception) {
+		} catch (exception) {
 			sendTempMessage('error', `blog was not able to be updated, ${exception.message}`)
 			console.log('ERROR: ', exception.message)
 		}
@@ -89,8 +86,7 @@ const App = () => {
 			console.log('removed blog', blogObject)
 			setBlogs(blogs.filter(b => b.id !== id))
 			sendTempMessage('success', `"${blogObject.title}" by ${blogObject.author} removed`)
-		}
-		catch (exception) {
+		} catch (exception) {
 			sendTempMessage('error', `blog was not able to be remove, ${exception.message}`)
 			console.log('ERROR: ', exception.message)
 		}
@@ -99,27 +95,24 @@ const App = () => {
 	return (
 		<div>
 			<Notification message={message} />
-			{
-				(user === null) ?
-					<LoginForm handleLogin={handleLogin} /> :
-					<div>
-						<BlogHeader
-							nameOfUser={user.name}
-							handleLogout={handleLogout}
-						/>
-						<Toggleable showText='create new blog' ref={blogFormRef}>
-							<BlogForm handleAddBlog={addBlog}/>
-						</Toggleable>
-						<br />
-						<br />
-						<BlogList
-							blogs={blogs}
-							user={user}
-							handleUpdateBlog={updateBlog}
-							handleRemoveBlog={removeBlog}
-						/>
-					</div>
-			}
+			{user === null ? (
+				<LoginForm handleLogin={handleLogin} />
+			) : (
+				<div>
+					<BlogHeader nameOfUser={user.name} handleLogout={handleLogout} />
+					<Toggleable showText='create new blog' ref={blogFormRef}>
+						<BlogForm handleAddBlog={addBlog} />
+					</Toggleable>
+					<br />
+					<br />
+					<BlogList
+						blogs={blogs}
+						user={user}
+						handleUpdateBlog={updateBlog}
+						handleRemoveBlog={removeBlog}
+					/>
+				</div>
+			)}
 		</div>
 	)
 }

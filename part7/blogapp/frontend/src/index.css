@@ -1,33 +1,40 @@
-ul, li {
-  padding: 0;
-  list-style-type: none;
+ul,
+li {
+	padding: 0;
+	list-style-type: none;
 }
 
 .blog {
-  padding: 5px;
-  border: 1px solid black;
-  margin: 5px;
+	padding: 5px;
+	border: 1px solid black;
+	margin: 5px;
 }
 
 button.remove {
-  background-color: slateblue;
-  color: white;
-  border-radius: 4px;
+	background-color: slateblue;
+	color: white;
+	border-radius: 4px;
 }
 .message {
-  width: max-content;
-  padding: 10px;
-  margin-bottom: 10px;
+	width: max-content;
+	padding: 10px;
+	margin-bottom: 10px;
 
-  background: lightgray;
-  font-size: 20px;
-  font-weight: bold;
+	background: lightgray;
+	font-size: 20px;
+	font-weight: bold;
 
-  border-style: solid;
-  border-radius: 5px;
+	border-style: solid;
+	border-radius: 5px;
 }
 
-.error {color: red;}
-.success {color: green;}
+.error {
+	color: red;
+}
+.success {
+	color: green;
+}
 
-.hidden {display: none}
+.hidden {
+	display: none;
+}

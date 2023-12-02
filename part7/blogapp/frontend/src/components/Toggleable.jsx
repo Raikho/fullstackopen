@@ -5,11 +5,17 @@ const Toggleable = forwardRef((props, refs) => {
 	const { showText, hideText, children } = props
 	const [visible, setVisible] = useState(false)
 
-	const hideWhenVisible = { display: (visible) ? 'none' : 'block' }
-	const showWhenVisible = { display: (visible) ? 'block' : 'none' }
+	const hideWhenVisible = {
+		display: visible ? 'none' : 'block',
+	}
+	const showWhenVisible = {
+		display: visible ? 'block' : 'none',
+	}
 	const toggleVisibility = () => setVisible(!visible)
 
-	useImperativeHandle(refs, () => {return {toggleVisibility}})
+	useImperativeHandle(refs, () => {
+		return { toggleVisibility }
+	})
 
 	return (
 		<span>
@@ -17,7 +23,9 @@ const Toggleable = forwardRef((props, refs) => {
 				{showText || 'show'}
 			</button>
 			<span style={showWhenVisible} className='toggleableContent'>
-				<button onClick={toggleVisibility} className='hide-button'>{hideText || 'cancel'}</button>
+				<button onClick={toggleVisibility} className='hide-button'>
+					{hideText || 'cancel'}
+				</button>
 				{children}
 			</span>
 		</span>

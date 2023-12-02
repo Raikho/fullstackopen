@@ -1,11 +1,6 @@
 import Blog from './Blog'
 
-const BlogList = ({
-	blogs,
-	user,
-	handleUpdateBlog,
-	handleRemoveBlog,
-}) => {
+const BlogList = ({ blogs, user, handleUpdateBlog, handleRemoveBlog }) => {
 	const sortedBlogs = blogs.toSorted((a, b) => {
 		if (a.likes < b.likes) return 1
 		else if (a.likes > b.likes) return -1
@@ -21,7 +16,8 @@ const BlogList = ({
 					user={user}
 					handleUpdateBlog={handleUpdateBlog}
 					handleRemoveBlog={handleRemoveBlog}
-				/>))}
+				/>
+			))}
 		</ul>
 	)
 }

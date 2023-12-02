@@ -7,8 +7,7 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 	}
 
 	const removeBlog = () => {
-		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`))
-			handleRemoveBlog(blog)
+		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) handleRemoveBlog(blog)
 	}
 
 	return (
@@ -21,13 +20,16 @@ const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
 				<div>
 					<span>likes </span>
 					<span className='likes'>{blog.likes}</span>
-					<button onClick={likeBlog} className='like-button'>like</button>
+					<button onClick={likeBlog} className='like-button'>
+						like
+					</button>
 				</div>
 				<div>{blog.user.username}</div>
-				{(user.username === blog.user.username) ?
-					<button className='remove-button' onClick={removeBlog}>remove</button> :
-					null
-				}
+				{user.username === blog.user.username ? (
+					<button className='remove-button' onClick={removeBlog}>
+						remove
+					</button>
+				) : null}
 			</Toggleable>
 		</li>
 	)

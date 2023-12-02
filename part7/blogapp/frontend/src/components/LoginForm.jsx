@@ -1,4 +1,4 @@
-import PropTypes from'prop-types'
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import Field from './Field'
 
@@ -17,12 +17,7 @@ const LoginForm = ({ handleLogin }) => {
 		<div>
 			<h1>log in to application</h1>
 			<form onSubmit={handleSubmit}>
-				<Field
-					name='username'
-					id='username'
-					value={username}
-					handleChange={setUsername}
-				/>
+				<Field name='username' id='username' value={username} handleChange={setUsername} />
 				<Field
 					name='password'
 					id='password'
@@ -30,7 +25,9 @@ const LoginForm = ({ handleLogin }) => {
 					value={password}
 					handleChange={setPassword}
 				/>
-				<button id='login-button' type='submit'>login</button>
+				<button id='login-button' type='submit'>
+					login
+				</button>
 			</form>
 		</div>
 	)

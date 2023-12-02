@@ -6,8 +6,7 @@ const save = (tag, object) => {
 
 const load = tag => {
 	const json = window.localStorage.getItem(tag)
-	if (!json)
-		return null
+	if (!json) return null
 	return JSON.parse(json)
 }
 

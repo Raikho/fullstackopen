@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setNotification as setNote } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -27,7 +28,9 @@ const App = () => {
 			blogService.setToken(item.token)
 		}
 
-		blogService //
+		dispatch(initializeBlogs())
+
+		blogService // TODO: REMOVE
 			.getAll()
 			.then(blogs => setBlogs(blogs))
 	}, [])
@@ -55,7 +58,7 @@ const App = () => {
 		try {
 			const blog = await blogService.create(blogObject)
 			console.log('created blog:', blog) // debug
-			setBlogs(blogs.concat({ ...blog, user }))
+			setBlogs(blogs.concat({ ...blog, user })) // TODO: create action
 			dispatch(setNote('success', `a new blog "${blog.title}" by ${blog.author} added`, 3))
 			blogFormRef.current.toggleVisibility()
 		} catch (exception) {
@@ -68,7 +71,7 @@ const App = () => {
 		try {
 			const blog = await blogService.update(blogObject)
 			console.log('updated blog:', blog) // debug
-			setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogObject)))
+			setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogObject))) // TODO: create action
 			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`, 3))
 		} catch (exception) {
 			console.log('ERROR: ', exception.message) // debug
@@ -81,7 +84,7 @@ const App = () => {
 			const id = blogObject.id
 			await blogService.remove(id)
 			console.log('removed blog', blogObject) // debug
-			setBlogs(blogs.filter(b => b.id !== id))
+			setBlogs(blogs.filter(b => b.id !== id)) // TODO: create action
 			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`, 3))
 		} catch (exception) {
 			console.log('ERROR: ', exception.message) // debug
@@ -102,12 +105,7 @@ const App = () => {
 					</Toggleable>
 					<br />
 					<br />
-					<BlogList
-						blogs={blogs}
-						user={user}
-						handleUpdateBlog={updateBlog}
-						handleRemoveBlog={removeBlog}
-					/>
+					<BlogList user={user} handleUpdateBlog={updateBlog} handleRemoveBlog={removeBlog} />
 				</div>
 			)}
 		</div>

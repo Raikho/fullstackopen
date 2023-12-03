@@ -1,6 +1,9 @@
 import Blog from './Blog'
+import { useSelector } from 'react-redux'
 
-const BlogList = ({ blogs, user, handleUpdateBlog, handleRemoveBlog }) => {
+const BlogList = ({ user, handleUpdateBlog, handleRemoveBlog }) => {
+	const blogs = useSelector(state => state.blogs)
+
 	const sortedBlogs = blogs.toSorted((a, b) => {
 		if (a.likes < b.likes) return 1
 		else if (a.likes > b.likes) return -1

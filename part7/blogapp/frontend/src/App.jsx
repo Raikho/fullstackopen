@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setNotification as setNote } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog, updateBlog as updateBlog2 } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,11 +14,8 @@ import Notification from './components/Notification'
 import Toggleable from './components/Toggleable'
 
 const App = () => {
-	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
-	const [message, setMessage] = useState({ status: 'clear', text: '' })
 	const blogFormRef = useRef()
-
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -60,31 +57,27 @@ const App = () => {
 		}
 	}
 
-	const updateBlog = async blog => {
+	const handleUpdateBlog = async blog => {
 		try {
-			dispatch(updateBlog2(blog, user))
+			dispatch(updateBlog(blog, user))
 			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`))
 		} catch (exception) {
 			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`))
 		}
 	}
 
-	const removeBlog = async blogObject => {
+	const handleRemoveBlog = async blogObject => {
 		try {
-			const id = blogObject.id
-			await blogService.remove(id)
-			console.log('removed blog', blogObject) // debug
-			setBlogs(blogs.filter(b => b.id !== id)) // TODO: create action
+			dispatch(removeBlog(blogObject))
 			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`))
 		} catch (exception) {
-			console.log('ERROR: ', exception.message) // debug
 			dispatch(setNote('error', `blog was not able to be remove, ${exception.message}`))
 		}
 	}
 
 	return (
 		<div>
-			<Notification message={message} />
+			<Notification />
 			{user === null ? (
 				<LoginForm handleLogin={handleLogin} />
 			) : (
@@ -95,7 +88,7 @@ const App = () => {
 					</Toggleable>
 					<br />
 					<br />
-					<BlogList user={user} handleUpdateBlog={updateBlog} handleRemoveBlog={removeBlog} />
+					<BlogList {...{ user, handleUpdateBlog, handleRemoveBlog }} />
 				</div>
 			)}
 		</div>

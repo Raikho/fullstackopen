@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setNotification as setNote } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
+import { setUser, removeUser } from './reducers/userReducer'
+import { useSelector } from 'react-redux'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,13 +16,14 @@ import Notification from './components/Notification'
 import Toggleable from './components/Toggleable'
 
 const App = () => {
-	const [user, setUser] = useState(null)
-	const blogFormRef = useRef()
 	const dispatch = useDispatch()
+	const user = useSelector(state => state.user)
+	const blogFormRef = useRef()
 
 	useEffect(() => {
 		const item = storage.load('loggedBlogappUser')
 		if (item) {
+			console.log('item', item)
 			setUser(item)
 			blogService.setToken(item.token)
 		}
@@ -30,21 +33,24 @@ const App = () => {
 
 	const handleLogin = async (username, password) => {
 		try {
+			username = 'test_user_1' // debug
+			password = 'test_pass_1' // debug
+
 			const user = await loginService.login({ username, password })
-			console.log('current user received is', user) // debug
-			setUser(user)
+
 			blogService.setToken(user.token)
-			storage.save('loggedBlogappUser', user) // undo
+			storage.save('loggedBlogappUser', user)
+
+			dispatch(setUser(user))
 			dispatch(setNote('success', `User ${user.username} successfully logged in`))
 		} catch (exception) {
-			console.log('ERROR: ', exception.message) // debug
 			dispatch(setNote('error', 'wrong username or password'))
 		}
 	}
 
 	const handleLogout = () => {
 		storage.remove('loggedBlogappUser')
-		setUser(null)
+		dispatch(removeUser())
 	}
 
 	const addBlog = async blog => {

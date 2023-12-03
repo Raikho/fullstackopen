@@ -15,7 +15,7 @@ const notification = createSlice({
 
 const { setMessage, setStatus } = notification.actions
 
-export const setNotification = (status, msg, seconds) => {
+export const setNotification = (status, msg, seconds = 3) => {
 	return async dispatch => {
 		dispatch(setMessage(msg))
 		dispatch(setStatus(status))

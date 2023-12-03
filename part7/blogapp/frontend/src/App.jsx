@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setNotification as setNote } from './reducers/notificationReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -29,10 +29,6 @@ const App = () => {
 		}
 
 		dispatch(initializeBlogs())
-
-		blogService // TODO: REMOVE
-			.getAll()
-			.then(blogs => setBlogs(blogs))
 	}, [])
 
 	const handleLogin = async (username, password) => {
@@ -42,10 +38,10 @@ const App = () => {
 			setUser(user)
 			blogService.setToken(user.token)
 			storage.save('loggedBlogappUser', user) // undo
-			dispatch(setNote('success', `User ${user.username} successfully logged in`, 3))
+			dispatch(setNote('success', `User ${user.username} successfully logged in`))
 		} catch (exception) {
 			console.log('ERROR: ', exception.message) // debug
-			dispatch(setNote('error', 'wrong username or password', 3))
+			dispatch(setNote('error', 'wrong username or password'))
 		}
 	}
 
@@ -54,16 +50,13 @@ const App = () => {
 		setUser(null)
 	}
 
-	const addBlog = async blogObject => {
+	const addBlog = async blog => {
 		try {
-			const blog = await blogService.create(blogObject)
-			console.log('created blog:', blog) // debug
-			setBlogs(blogs.concat({ ...blog, user })) // TODO: create action
-			dispatch(setNote('success', `a new blog "${blog.title}" by ${blog.author} added`, 3))
+			dispatch(createBlog(blog, user))
+			dispatch(setNote('success', `A new blog "${blog.title}" by ${blog.author} was added`))
 			blogFormRef.current.toggleVisibility()
 		} catch (exception) {
-			console.log('ERROR: ', exception.message) // debug
-			dispatch(setNote('error', `blog was not able to be added, ${exception.message}`, 3))
+			dispatch(setNote('error', `blog was not able to be added, ${exception.message}`))
 		}
 	}
 
@@ -75,7 +68,7 @@ const App = () => {
 			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`, 3))
 		} catch (exception) {
 			console.log('ERROR: ', exception.message) // debug
-			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`, 3))
+			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`))
 		}
 	}
 
@@ -85,10 +78,10 @@ const App = () => {
 			await blogService.remove(id)
 			console.log('removed blog', blogObject) // debug
 			setBlogs(blogs.filter(b => b.id !== id)) // TODO: create action
-			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`, 3))
+			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`))
 		} catch (exception) {
 			console.log('ERROR: ', exception.message) // debug
-			dispatch(setNote('error', `blog was not able to be remove, ${exception.message}`, 3))
+			dispatch(setNote('error', `blog was not able to be remove, ${exception.message}`))
 		}
 	}
 

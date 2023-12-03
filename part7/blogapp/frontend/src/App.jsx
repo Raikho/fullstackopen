@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { setNotification as setNote } from './reducers/notificationReducer'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './services/storage'
@@ -15,6 +18,8 @@ const App = () => {
 	const [message, setMessage] = useState({ status: 'clear', text: '' })
 	const blogFormRef = useRef()
 
+	const dispatch = useDispatch()
+
 	useEffect(() => {
 		const item = storage.load('loggedBlogappUser')
 		if (item) {
@@ -29,24 +34,16 @@ const App = () => {
 
 	const handleLogin = async (username, password) => {
 		try {
-			const user = await loginService.login({
-				username,
-				password,
-			})
-			console.log('current user received is', user)
+			const user = await loginService.login({ username, password })
+			console.log('current user received is', user) // debug
 			setUser(user)
 			blogService.setToken(user.token)
 			storage.save('loggedBlogappUser', user) // undo
-			sendTempMessage('success', `User ${user.username} successfully logged in`)
+			dispatch(setNote('success', `User ${user.username} successfully logged in`, 3))
 		} catch (exception) {
-			sendTempMessage('error', 'wrong username or password')
-			console.log('ERROR: ', exception.message)
+			console.log('ERROR: ', exception.message) // debug
+			dispatch(setNote('error', 'wrong username or password', 3))
 		}
-	}
-
-	const sendTempMessage = (status, text) => {
-		setMessage({ status, text })
-		setTimeout(() => setMessage({ status: 'clear', text: '' }), 3000)
 	}
 
 	const handleLogout = () => {
@@ -57,25 +54,25 @@ const App = () => {
 	const addBlog = async blogObject => {
 		try {
 			const blog = await blogService.create(blogObject)
-			console.log('created blog:', blog)
+			console.log('created blog:', blog) // debug
 			setBlogs(blogs.concat({ ...blog, user }))
-			sendTempMessage('success', `a new blog "${blog.title}" by ${blog.author} added`)
+			dispatch(setNote('success', `a new blog "${blog.title}" by ${blog.author} added`, 3))
 			blogFormRef.current.toggleVisibility()
 		} catch (exception) {
-			sendTempMessage('error', `blog was not able to be added, ${exception.message}`)
-			console.log('ERROR: ', exception.message)
+			console.log('ERROR: ', exception.message) // debug
+			dispatch(setNote('error', `blog was not able to be added, ${exception.message}`, 3))
 		}
 	}
 
 	const updateBlog = async blogObject => {
 		try {
 			const blog = await blogService.update(blogObject)
-			console.log('updated blog:', blog)
+			console.log('updated blog:', blog) // debug
 			setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogObject)))
-			sendTempMessage('success', `"${blog.title}" by ${blog.author} updated`)
+			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`, 3))
 		} catch (exception) {
-			sendTempMessage('error', `blog was not able to be updated, ${exception.message}`)
-			console.log('ERROR: ', exception.message)
+			console.log('ERROR: ', exception.message) // debug
+			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`, 3))
 		}
 	}
 
@@ -83,12 +80,12 @@ const App = () => {
 		try {
 			const id = blogObject.id
 			await blogService.remove(id)
-			console.log('removed blog', blogObject)
+			console.log('removed blog', blogObject) // debug
 			setBlogs(blogs.filter(b => b.id !== id))
-			sendTempMessage('success', `"${blogObject.title}" by ${blogObject.author} removed`)
+			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`, 3))
 		} catch (exception) {
-			sendTempMessage('error', `blog was not able to be remove, ${exception.message}`)
-			console.log('ERROR: ', exception.message)
+			console.log('ERROR: ', exception.message) // debug
+			dispatch(setNote('error', `blog was not able to be remove, ${exception.message}`, 3))
 		}
 	}
 

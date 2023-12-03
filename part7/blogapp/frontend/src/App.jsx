@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setNotification as setNote } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, updateBlog as updateBlog2 } from './reducers/blogReducer'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -60,14 +60,11 @@ const App = () => {
 		}
 	}
 
-	const updateBlog = async blogObject => {
+	const updateBlog = async blog => {
 		try {
-			const blog = await blogService.update(blogObject)
-			console.log('updated blog:', blog) // debug
-			setBlogs(blogs.map(b => (b.id !== blog.id ? b : blogObject))) // TODO: create action
-			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`, 3))
+			dispatch(updateBlog2(blog, user))
+			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`))
 		} catch (exception) {
-			console.log('ERROR: ', exception.message) // debug
 			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`))
 		}
 	}

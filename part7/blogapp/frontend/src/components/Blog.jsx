@@ -1,6 +1,9 @@
 import Toggleable from './Toggleable'
+import { useSelector } from 'react-redux'
 
-const Blog = ({ blog, user, handleUpdateBlog, handleRemoveBlog }) => {
+const Blog = ({ blog, handleUpdateBlog, handleRemoveBlog }) => {
+	const user = useSelector(state => state.user)
+
 	const likeBlog = () => {
 		const updatedBlog = { ...blog, likes: blog.likes + 1 }
 		handleUpdateBlog(updatedBlog)

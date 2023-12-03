@@ -1,6 +1,8 @@
-import Blog from './Blog'
+import { useSelector } from 'react-redux'
 
-const BlogHeader = ({ nameOfUser, handleLogout }) => {
+const BlogHeader = ({ handleLogout }) => {
+	const nameOfUser = useSelector(state => state.user.name)
+
 	return (
 		<div>
 			<h1>blogs</h1>

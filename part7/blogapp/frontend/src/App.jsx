@@ -23,8 +23,7 @@ const App = () => {
 	useEffect(() => {
 		const item = storage.load('loggedBlogappUser')
 		if (item) {
-			console.log('item', item)
-			setUser(item)
+			dispatch(setUser(item))
 			blogService.setToken(item.token)
 		}
 
@@ -33,11 +32,7 @@ const App = () => {
 
 	const handleLogin = async (username, password) => {
 		try {
-			username = 'test_user_1' // debug
-			password = 'test_pass_1' // debug
-
 			const user = await loginService.login({ username, password })
-
 			blogService.setToken(user.token)
 			storage.save('loggedBlogappUser', user)
 
@@ -88,13 +83,13 @@ const App = () => {
 				<LoginForm handleLogin={handleLogin} />
 			) : (
 				<div>
-					<BlogHeader nameOfUser={user.name} handleLogout={handleLogout} />
+					<BlogHeader handleLogout={handleLogout} />
 					<Toggleable showText='create new blog' ref={blogFormRef}>
 						<BlogForm handleAddBlog={addBlog} />
 					</Toggleable>
 					<br />
 					<br />
-					<BlogList {...{ user, handleUpdateBlog, handleRemoveBlog }} />
+					<BlogList {...{ handleUpdateBlog, handleRemoveBlog }} />
 				</div>
 			)}
 		</div>

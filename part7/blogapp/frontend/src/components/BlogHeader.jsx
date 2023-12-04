@@ -1,7 +1,15 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import storage from '../services/storage'
+import { removeUser } from '../reducers/userReducer'
 
-const BlogHeader = ({ handleLogout }) => {
+const BlogHeader = () => {
 	const nameOfUser = useSelector(state => state.user.name)
+	const dispatch = useDispatch()
+
+	const handleLogout = () => {
+		storage.remove('loggedBlogappUser')
+		dispatch(removeUser())
+	}
 
 	return (
 		<div>

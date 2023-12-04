@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useEffect, useRef } from 'react'
 import { setNotification as setNote } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
 import { setUser, removeUser } from './reducers/userReducer'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+// import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -48,34 +48,6 @@ const App = () => {
 		dispatch(removeUser())
 	}
 
-	const addBlog = async blog => {
-		try {
-			dispatch(createBlog(blog, user))
-			dispatch(setNote('success', `A new blog "${blog.title}" by ${blog.author} was added`))
-			blogFormRef.current.toggleVisibility()
-		} catch (exception) {
-			dispatch(setNote('error', `blog was not able to be added, ${exception.message}`))
-		}
-	}
-
-	const handleUpdateBlog = async blog => {
-		try {
-			dispatch(updateBlog(blog, user))
-			dispatch(setNote('success', `"${blog.title}" by ${blog.author} updated`))
-		} catch (exception) {
-			dispatch(setNote('error', `blog was not able to be updated, ${exception.message}`))
-		}
-	}
-
-	const handleRemoveBlog = async blogObject => {
-		try {
-			dispatch(removeBlog(blogObject))
-			dispatch(setNote('success', `"${blogObject.title}" by ${blogObject.author} removed`))
-		} catch (exception) {
-			dispatch(setNote('error', `blog was not able to be remove, ${exception.message}`))
-		}
-	}
-
 	return (
 		<div>
 			<Notification />
@@ -84,12 +56,10 @@ const App = () => {
 			) : (
 				<div>
 					<BlogHeader handleLogout={handleLogout} />
-					<Toggleable showText='create new blog' ref={blogFormRef}>
-						<BlogForm handleAddBlog={addBlog} />
-					</Toggleable>
+					<BlogForm />
 					<br />
 					<br />
-					<BlogList {...{ handleUpdateBlog, handleRemoveBlog }} />
+					<BlogList />
 				</div>
 			)}
 		</div>

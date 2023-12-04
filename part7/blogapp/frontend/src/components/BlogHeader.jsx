@@ -16,6 +16,8 @@ const BlogHeader = () => {
 			<h1>blogs</h1>
 			<div>
 				{nameOfUser} logged in
+				<br />
+				<br />
 				<button onClick={handleLogout} id='logout-button'>
 					logout
 				</button>

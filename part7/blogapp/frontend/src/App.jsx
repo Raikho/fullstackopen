@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { initializeBlogs } from './reducers/blogReducer'
 import { setUser, removeUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
-// import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 import blogService from './services/blogs'
 import storage from './services/storage'
@@ -10,6 +10,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import BlogHeader from './components/BlogHeader'
 import BlogList from './components/BlogList'
+import UserList from './components/userList'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -27,20 +28,35 @@ const App = () => {
 	}, [])
 
 	return (
-		<div>
+		<Router>
 			<Notification />
+			<Link to='/'> HOME </Link>
+			<Link to='/users'> USERS </Link>
+			<Link to='/blogs'> BLOGS </Link>
+
 			{user === null ? (
 				<LoginForm />
 			) : (
-				<div>
+				<>
 					<BlogHeader />
-					<BlogForm />
-					<br />
-					<br />
-					<BlogList />
-				</div>
+					<Routes>
+						<Route path='/' element={<div>currently at HOME</div>} />
+						<Route path='/users' element={<UserList />} />
+						<Route
+							path='/blogs'
+							element={
+								<div>
+									<BlogForm />
+									<br />
+									<br />
+									<BlogList />
+								</div>
+							}
+						/>
+					</Routes>
+				</>
 			)}
-		</div>
+		</Router>
 	)
 }
 

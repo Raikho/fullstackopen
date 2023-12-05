@@ -37,12 +37,10 @@ const App = () => {
 				<LoginForm />
 			) : (
 				<>
-					<Link to='/'> HOME </Link>
-					<Link to='/users'> USERS </Link>
-					<Link to='/blogs'> BLOGS </Link>
 					<BlogHeader />
+					<h1>blog app</h1>
 					<Routes>
-						<Route path='/' element={<div>currently at HOME</div>} />
+						<Route path='/' element={<BlogList />} />
 						<Route path='/users' element={<UserList />} />
 						<Route path='/users/:id' element={<User />} />
 						<Route

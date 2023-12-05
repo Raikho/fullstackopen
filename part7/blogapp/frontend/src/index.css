@@ -8,6 +8,12 @@ li.decorated {
 	list-style-type: disc;
 }
 
+.blogItem {
+	padding: 10px 2px 2px 2px;
+	margin-bottom: 10px;
+	border: 3px solid black;
+	border-radius: 3px;
+}
 .blog {
 	padding: 5px;
 	border: 1px solid black;

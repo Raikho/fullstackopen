@@ -10,7 +10,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import BlogHeader from './components/BlogHeader'
 import BlogList from './components/BlogList'
-// import Blog from './components/Blog'
+import Blog from './components/Blog'
 import UserList from './components/userList'
 import User from './components/User'
 import Notification from './components/Notification'
@@ -48,15 +48,13 @@ const App = () => {
 						<Route
 							path='/blogs'
 							element={
-								<div>
+								<>
 									<BlogForm />
-									<br />
-									<br />
 									<BlogList />
-								</div>
+								</>
 							}
 						/>
-						{/* <Route path='/blogs/:id' element={<Blog />} /> */}
+						<Route path='/blogs/:id' element={<Blog />} />
 					</Routes>
 				</>
 			)}

@@ -1,7 +1,7 @@
-import Blog from './Blog'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-const BlogList = ({ handleUpdateBlog, handleRemoveBlog }) => {
+const BlogList = () => {
 	const blogs = useSelector(state => state.blogs)
 
 	const sortedBlogs = blogs.toSorted((a, b) => {
@@ -13,12 +13,11 @@ const BlogList = ({ handleUpdateBlog, handleRemoveBlog }) => {
 	return (
 		<ul className='blog-container'>
 			{sortedBlogs.map(blog => (
-				<Blog
-					key={blog.id}
-					blog={blog}
-					handleUpdateBlog={handleUpdateBlog}
-					handleRemoveBlog={handleRemoveBlog}
-				/>
+				<li key={blog.id}>
+					<Link to={`/blogs/${blog.id}`}>
+						{blog.title} ({blog.author})
+					</Link>
+				</li>
 			))}
 		</ul>
 	)

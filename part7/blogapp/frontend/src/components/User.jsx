@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 const User = () => {
 	const { id } = useParams()
 	const user = useSelector(state => state.userList.find(user => user.id === id))
+
+	if (!user) return <Navigate replace to='/users' />
 
 	return (
 		<>

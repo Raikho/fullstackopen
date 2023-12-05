@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser, removeUser } from './reducers/userReducer'
+import { setUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
@@ -32,14 +32,14 @@ const App = () => {
 	return (
 		<Router>
 			<Notification />
-			<Link to='/'> HOME </Link>
-			<Link to='/users'> USERS </Link>
-			<Link to='/blogs'> BLOGS </Link>
 
 			{user === null ? (
 				<LoginForm />
 			) : (
 				<>
+					<Link to='/'> HOME </Link>
+					<Link to='/users'> USERS </Link>
+					<Link to='/blogs'> BLOGS </Link>
 					<BlogHeader />
 					<Routes>
 						<Route path='/' element={<div>currently at HOME</div>} />

@@ -1,0 +1,99 @@
+@userHost = http://localhost:3003/api/users
+@loginHost = http://localhost:3003/api/login
+@blogHost = http://localhost:3003/api/blogs
+
+@accessToken1 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU2ZjA0NjFkNTNmMzY4MGNkNTRjNzRjIiwiaWF0IjoxNzAxNzc0Nzc4fQ.Wj_IJwfJuEE5WIXcdAvWQuKCuGU1mXwGCy_h_oJAozo
+@accessToken2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphbmVfZG9lIiwiaWQiOiI2NTZmMDQ2NmQ1M2YzNjgwY2Q1NGM3NTAiLCJpYXQiOjE3MDE3NzQ0NTJ9.wbv_lYf9Nf92mORb57rcwy2UzrFoOAnIfSQrK2w_ypk
+###
+# @name createUser1
+post {{userHost}}
+Content-Type: application/json
+
+{
+    "username": "bob_smith",
+    "name": "Bob Smith",
+    "password": "1234"
+}
+###
+# @name createUser2
+post {{userHost}}
+Content-Type: application/json
+
+{
+    "username": "jane_doe",
+    "name": "Jane Doe",
+    "password": "1234"
+}
+###
+# @name loginUser1
+POST {{loginHost}}
+Content-Type: application/json
+
+{
+    "username": "bob_smith",
+    "password": "1234"
+}
+###
+# @name loginUser2
+POST {{loginHost}}
+Content-Type: application/json
+
+{
+    "username": "jane_doe",
+    "password": "1234"
+}
+###
+POST {{blogHost}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken1}}
+
+{
+  "title": "React patterns",
+  "author": "Michael Chan",
+  "url": "https://reactpatterns.com/",
+  "likes": 7
+}
+###
+POST {{blogHost}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken1}}
+
+{
+  "title": "Go To Statement Considered Harmful",
+  "author": "Edsger W. Dijkstra",
+  "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+  "likes": 5
+}
+###
+POST {{blogHost}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken1}}
+
+{
+  "title": "Canonical string reduction",
+  "author": "Edsger W. Dijkstra",
+  "url": "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+  "likes": 12
+}
+###
+POST {{blogHost}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken2}}
+
+{
+  "title": "First class tests",
+  "author": "Robert C. Martin",
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+  "likes": 10,
+}
+###
+POST {{blogHost}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken2}}
+
+{
+  "title": "TDD harms architecture",
+  "author": "Robert C. Martin",
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+  "likes": 0,
+}

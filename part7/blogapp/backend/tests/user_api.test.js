@@ -8,11 +8,10 @@ const api = supertest(app)
 const User = require('../models/user')
 
 describe('POST user', () => {
-
 	beforeEach(async () => {
 		await User.deleteMany({})
 		const passwordHash = await bcrypt.hash('secret', 10)
-		const user = new User({ username: 'root', passwordHash })
+		const user = new User({ username: 'root', passwordHash, name: 'Bob Smith' })
 		await user.save()
 	})
 
@@ -46,15 +45,14 @@ describe('POST user', () => {
 			.post('/api/users')
 			.send({
 				username: 'root',
-				password: 'rootpass123'
+				password: 'rootpass123',
 			})
 			.expect(400)
 			.expect('Content-Type', /application\/json/)
 
 		const endingUsers = await helper.fetchUsers()
 		expect(endingUsers).toEqual(startingUsers)
-		expect(result.body.error)
-			.toContain('expected `username` to be unique')
+		expect(result.body.error).toContain('expected `username` to be unique')
 	})
 
 	test('fails when password doesnt meet requirements', async () => {
@@ -72,7 +70,7 @@ describe('POST user', () => {
 			.post('/api/users')
 			.send({
 				username: 'Jane Doe',
-				password: '12'
+				password: '12',
 			})
 			.expect(400)
 			.expect('Content-Type', /application\/json/)
@@ -84,4 +82,7 @@ describe('POST user', () => {
 	})
 })
 
-afterAll(async () => await mongoose.connection.close())
+afterAll(async () => {
+	await User.deleteMany({})
+	await mongoose.connection.close()
+})

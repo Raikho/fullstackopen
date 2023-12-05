@@ -52,4 +52,12 @@ export const removeBlog = blogObject => {
 	}
 }
 
+export const addComment = commentObject => {
+	return async dispatch => {
+		const response = await blogService.addComment(commentObject)
+		console.log('response from server is:', response)
+		// dispatch(replaceBlog({ ...blogObject })) // TODO
+	}
+}
+
 export default blogs.reducer

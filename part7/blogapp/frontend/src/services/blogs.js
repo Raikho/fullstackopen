@@ -24,9 +24,21 @@ const remove = async id => {
 	return response.data
 }
 
-const getAll = () => {
+const getAll = async () => {
 	const request = axios.get(baseUrl)
-	return request.then(response => response.data)
+	const data = request.then(response => {
+		console.log('the data received from getAll is:', response.data) // debug
+		return response.data
+	})
+	return data
 }
 
-export default { setToken, getAll, create, update, remove }
+const addComment = async commentObject => {
+	const { text } = commentObject
+
+	const commentUrl = `${baseUrl}/${commentObject.blogId}/comments`
+	const response = await axios.post(commentUrl, { text })
+	return response.data
+}
+
+export default { setToken, getAll, create, update, remove, addComment }

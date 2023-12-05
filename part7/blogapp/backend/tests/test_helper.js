@@ -25,7 +25,7 @@ const initialBlogs = [
 	{
 		title: 'First class tests',
 		author: 'Robert C. Martin',
-		url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+		url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
 		likes: 10,
 	},
 	{
@@ -39,7 +39,7 @@ const initialBlogs = [
 		author: 'Robert C. Martin',
 		url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
 		likes: 2,
-	}
+	},
 ]
 
 const extraBlog = {
@@ -98,17 +98,16 @@ const user2 = {
 	password: 'user2password',
 }
 
-const addNewUser = async (givenUser) => {
+const addNewUser = async givenUser => {
 	const { username, name, password } = givenUser
 	const passwordHash = await bcrypt.hash(password, 10)
 	const user = new User({ username, name, passwordHash })
 	await user.save()
 }
-const getAuth = async (givenUser) => {
+const getAuth = async givenUser => {
 	const { username } = givenUser
 	const user = await User.findOne({ username })
-	if(!user)
-		return null
+	if (!user) return null
 	const userForToken = { username, id: user._id }
 	const token = jwt.sign(userForToken, process.env.SECRET)
 	return 'Bearer '.concat(token)

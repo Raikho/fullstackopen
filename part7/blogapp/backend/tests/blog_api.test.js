@@ -22,7 +22,7 @@ beforeAll(async () => {
 	await Blog.deleteMany({})
 	const users = await User.find({})
 	const updatedBlogs = helper.initialBlogs.map((b, index) => {
-		const user = (index <= 3) ? users[0] : users[1]
+		const user = index <= 3 ? users[0] : users[1]
 		return { ...b, user: user._id.toString() }
 	})
 	await Blog.insertMany(updatedBlogs)
@@ -68,16 +68,12 @@ describe('GET specific blog', () => {
 
 	test('fails with code 404 if no blog exists', async () => {
 		const missingId = await helper.missingId()
-		await api
-			.get(`/api/blogs/${missingId}`)
-			.expect(404)
+		await api.get(`/api/blogs/${missingId}`).expect(404)
 	})
 
 	test('fails with code 400 if id is invalid', async () => {
 		const invalidId = '0'
-		await api
-			.get(`/api/blogs/${invalidId}`)
-			.expect(400)
+		await api.get(`/api/blogs/${invalidId}`).expect(400)
 	})
 })
 
@@ -115,16 +111,8 @@ describe('POST blog', () => {
 
 	test('w/o title/url gives 400 bad request', async () => {
 		const blogsAtStart = await helper.fetchBlogs()
-		await api
-			.post('/api/blogs')
-			.set({ Authorization: auth1 })
-			.send(helper.noTitleBlog)
-			.expect(400)
-		await api
-			.post('/api/blogs')
-			.set({ Authorization: auth1 })
-			.send(helper.noUrlBlog)
-			.expect(400)
+		await api.post('/api/blogs').set({ Authorization: auth1 }).send(helper.noTitleBlog).expect(400)
+		await api.post('/api/blogs').set({ Authorization: auth1 }).send(helper.noUrlBlog).expect(400)
 		const blogsAtEnd = await helper.fetchBlogs()
 
 		expect(blogsAtEnd.length).toBe(blogsAtStart.length)
@@ -144,17 +132,14 @@ describe('POST blog', () => {
 			.set({ Authorization: 'Bearer abc' })
 			.send(helper.extraBlog)
 			.expect(401)
-	} )
+	})
 })
 
 describe('DELETE blog', () => {
 	test('deletes a resource w/ code 204', async () => {
 		const startBlogs = await helper.fetchBlogs()
-		const blogToDelete =  startBlogs[0]
-		await api
-			.delete(`/api/blogs/${blogToDelete.id}`)
-			.set({ Authorization: auth1 })
-			.expect(204)
+		const blogToDelete = startBlogs[0]
+		await api.delete(`/api/blogs/${blogToDelete.id}`).set({ Authorization: auth1 }).expect(204)
 		const endBlogs = await helper.fetchBlogs()
 
 		expect(startBlogs.length - endBlogs.length).toBe(1)
@@ -165,10 +150,7 @@ describe('DELETE blog', () => {
 	test('fails with 401 if user doesnt own blog', async () => {
 		const startBlogs = await helper.fetchBlogs()
 		const blogToDelete = startBlogs[0]
-		await api
-			.delete(`/api/blogs/${blogToDelete.id}`)
-			.set({ Authorization: auth2 })
-			.expect(401)
+		await api.delete(`/api/blogs/${blogToDelete.id}`).set({ Authorization: auth2 }).expect(401)
 	})
 })
 
@@ -197,4 +179,8 @@ describe('PUT blog', () => {
 	})
 })
 
-afterAll(async () => await mongoose.connection.close())
+afterAll(async () => {
+	await User.deleteMany({})
+	await Blog.deleteMany({})
+	await mongoose.connection.close()
+})

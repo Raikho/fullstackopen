@@ -1,13 +1,15 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, Navigate } from 'react-router-dom'
 import { setNotification as setNote } from '../reducers/notificationReducer'
-import { updateBlog, removeBlog } from '../reducers/blogReducer'
+import { updateBlog, removeBlog, addComment } from '../reducers/blogReducer'
+import { useField } from '../hooks'
 
 const Blog = () => {
 	const dispatch = useDispatch()
 	const { id } = useParams()
 	const blog = useSelector(state => state.blogs.find(blog => blog.id === id))
 	const user = useSelector(state => state.user)
+	const commentField = useField()
 
 	if (!blog) return <Navigate replace to='/blogs' />
 
@@ -31,25 +33,50 @@ const Blog = () => {
 		}
 	}
 
-	const { title, author, url, likes } = blog
+	const handleAddComment = () => {
+		const commentObject = {
+			blogId: blog.id,
+			text: commentField.value,
+		}
+		// const updatedBlog = { ...blog }
+		// if (!updatedBlog.comments) updatedBlog.comments = []
+		// updatedBlog.comments = updatedBlog.comments.concat(comment)
+
+		dispatch(addComment(commentObject))
+	}
+
+	// console.log('blog is now:', blog) // debug
 
 	return (
 		<li className='blog'>
-			<span>{title}</span> <span> </span>
-			<span>{author}</span>
-			<div>{url}</div>
+			<h1>{blog.title}</h1>
+			<span>by {blog.author}</span>
 			<div>
-				<span>likes </span>
-				<span className='likes'>{likes}</span>
+				<a href={blog.url}>{blog.url}</a>
+			</div>
+			<div>
+				<span className='likes'>{blog.likes} likes </span>
 				<button onClick={handleLikeBlog} className='like-button'>
 					like
 				</button>
 			</div>
-			<div>{blog.user.username}</div>
+			<div>added by {blog.user.username}</div>
 			{user.username === blog.user.username ? (
 				<button className='remove-button' onClick={handleRemoveBlog}>
 					remove
 				</button>
+			) : null}
+			<h1>comments</h1>
+			<input {...commentField} />
+			<button onClick={handleAddComment}>add Comments</button>
+			{blog.comments ? (
+				<ul>
+					{blog.comments.map(c => (
+						<li className='decorated' key={c.id}>
+							{c.text}
+						</li>
+					))}
+				</ul>
 			) : null}
 		</li>
 	)

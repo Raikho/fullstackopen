@@ -42,6 +42,7 @@ const App = () => {
 					<Routes>
 						<Route path='/' element={<div>currently at HOME</div>} />
 						<Route path='/users' element={<UserList />} />
+						<Route path='/users/:id' element={<div>SERPERATE USER</div>} />
 						<Route
 							path='/blogs'
 							element={

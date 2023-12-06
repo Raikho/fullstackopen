@@ -5,6 +5,7 @@ const express = require('express')
 require('express-async-errors')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const helmet = require('helmet')
 
 const app = express()
 const blogRouter = require('./controllers/blogs')
@@ -21,6 +22,7 @@ mongoose
 	.catch(err => logger.error('error connecting to MongoDB:', err.message))
 
 app.use(cors())
+app.use(helmet())
 // app.use(express.static('dist'))
 app.use(express.json())
 app.use(middleware.requestLogger)

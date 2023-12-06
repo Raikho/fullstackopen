@@ -1,5 +1,3 @@
-import Field from './Field'
-import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import loginService from '../services/login'
@@ -7,20 +5,23 @@ import blogService from '../services/blogs'
 import storage from '../services/storage'
 import { setUser } from '../reducers/userReducer'
 import { setNotification as setNote } from '../reducers/notificationReducer'
+import { useField } from '../hooks'
+
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
+	const username = useField('text')
+	const password = useField('text')
 	const dispatch = useDispatch()
 
 	const handleSubmit = event => {
 		event.preventDefault()
-		handleLogin(username, password)
-		setUsername('')
-		setPassword('')
+		handleLogin(username.value, password.value)
+		username.reset()
+		password.reset()
 	}
 
-	const handleLogin = async () => {
+	const handleLogin = async (username, password) => {
 		try {
 			const user = await loginService.login({ username, password })
 			blogService.setToken(user.token)
@@ -37,19 +38,17 @@ const LoginForm = () => {
 	return (
 		<div>
 			<h1>log in to application</h1>
-			<form onSubmit={handleSubmit}>
-				<Field name='username' id='username' value={username} handleChange={setUsername} />
-				<Field
-					name='password'
-					id='password'
-					type='password'
-					value={password}
-					handleChange={setPassword}
-				/>
-				<button id='login-button' type='submit'>
-					login
-				</button>
-			</form>
+			<Form onSubmit={handleSubmit}>
+				<Form.Group>
+					<Form.Label>username:</Form.Label>
+					<Form.Control {...username.atts} />
+					<Form.Label>password:</Form.Label>
+					<Form.Control {...password.atts} />
+					<Button variant='primary' type='submit'>
+						login
+					</Button>
+				</Form.Group>
+			</Form>
 		</div>
 	)
 }

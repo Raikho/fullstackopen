@@ -61,7 +61,7 @@ const Blog = () => {
 				</button>
 			) : null}
 			<h1>comments</h1>
-			<input {...commentField} />
+			<input {...commentField.atts} />
 			<button onClick={handleAddComment}>add Comments</button>
 			{blog.comments ? (
 				<ul>

@@ -2,8 +2,8 @@
 @loginHost = http://localhost:3003/api/login
 @blogHost = http://localhost:3003/api/blogs
 
-@accessToken1 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU2ZjA0NjFkNTNmMzY4MGNkNTRjNzRjIiwiaWF0IjoxNzAxNzc0Nzc4fQ.Wj_IJwfJuEE5WIXcdAvWQuKCuGU1mXwGCy_h_oJAozo
-@accessToken2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphbmVfZG9lIiwiaWQiOiI2NTZmMDQ2NmQ1M2YzNjgwY2Q1NGM3NTAiLCJpYXQiOjE3MDE3NzQ0NTJ9.wbv_lYf9Nf92mORb57rcwy2UzrFoOAnIfSQrK2w_ypk
+@accessToken1 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYl9zbWl0aCIsImlkIjoiNjU2ZmQ0ZmNiMDlmM2VkNzdiZmQxMDFhIiwiaWF0IjoxNzAxODI3ODQyfQ.FLt6HnOtXn1b7p3kFn1zcDA1wL7MNwkfGXuAGrmiHFo
+@accessToken2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphbmVfZG9lIiwiaWQiOiI2NTZmZDUwMGIwOWYzZWQ3N2JmZDEwMWUiLCJpYXQiOjE3MDE4Mjc4NTR9.3aDvtGCi8VkTQjZy7U2MKgmwZ4zyt5Gan3d4SZa_3wk
 ###
 # @name createUser1
 post {{userHost}}
@@ -84,7 +84,7 @@ Authorization: Bearer {{accessToken2}}
   "title": "First class tests",
   "author": "Robert C. Martin",
   "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
-  "likes": 10,
+  "likes": 10
 }
 ###
 POST {{blogHost}}
@@ -95,5 +95,5 @@ Authorization: Bearer {{accessToken2}}
   "title": "TDD harms architecture",
   "author": "Robert C. Martin",
   "url": "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-  "likes": 0,
+  "likes": 0
 }

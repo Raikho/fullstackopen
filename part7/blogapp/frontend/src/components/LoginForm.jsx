@@ -11,7 +11,7 @@ import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
 	const username = useField('text')
-	const password = useField('text')
+	const password = useField('password')
 	const dispatch = useDispatch()
 
 	const handleSubmit = event => {
@@ -28,7 +28,7 @@ const LoginForm = () => {
 			storage.save('loggedBlogappUser', user)
 
 			dispatch(setUser(user))
-			dispatch(setNote('success', `User ${user.username} successfully logged in`))
+			dispatch(setNote('success', `Welcome ${user.name}`))
 		} catch (exception) {
 			dispatch(setNote('error', 'Failed to login with username and password'))
 			console.log(`LOGIN ERROR: ${exception}`)

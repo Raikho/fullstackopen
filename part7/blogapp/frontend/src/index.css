@@ -1,3 +1,7 @@
+body {
+	padding: 10px;
+}
+
 ul,
 li {
 	padding: 0;
@@ -36,7 +40,18 @@ button.remove {
 	color: white;
 	border-radius: 4px;
 }
+
 .message {
+	border-color: rgba(128, 128, 128, 0.273);
+}
+.message.success {
+	background-color: #c2e8cc;
+}
+.message.error {
+	background-color: #eebbb5;
+}
+
+.message.hey {
 	width: max-content;
 	padding: 10px;
 	margin-bottom: 10px;
@@ -50,10 +65,10 @@ button.remove {
 }
 
 .error {
-	color: red;
+	/* color: red; */
 }
 .success {
-	color: green;
+	/* color: green; */
 }
 
 .hidden {

@@ -167,7 +167,8 @@ describe('PUT blog', () => {
 
 		expect(updatedBlog.body.likes - likes).toBe(1)
 	})
-	test('fails with 401 if user doesnt own blog', async () => {
+	// skip this because you can vote on a blog without owning it
+	test.skip('fails with 401 if user doesnt own blog', async () => {
 		const startBlogs = await helper.fetchBlogs()
 		const { title, author, url, likes, id } = startBlogs[0]
 

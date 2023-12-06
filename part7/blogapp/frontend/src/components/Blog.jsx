@@ -38,14 +38,8 @@ const Blog = () => {
 			blogId: blog.id,
 			text: commentField.value,
 		}
-		// const updatedBlog = { ...blog }
-		// if (!updatedBlog.comments) updatedBlog.comments = []
-		// updatedBlog.comments = updatedBlog.comments.concat(comment)
-
 		dispatch(addComment(commentObject))
 	}
-
-	// console.log('blog is now:', blog) // debug
 
 	return (
 		<li className='blog'>

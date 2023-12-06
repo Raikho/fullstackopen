@@ -41,4 +41,12 @@ const addComment = async commentObject => {
 	return response.data
 }
 
-export default { setToken, getAll, create, update, remove, addComment }
+const removeComment = async commentObject => {
+	const blogId = commentObject.blog
+	const id = commentObject.id
+	const commentUrl = `${baseUrl}/${blogId}/comments/${id}`
+	const response = await axios.delete(commentUrl)
+	return response.data
+}
+
+export default { setToken, getAll, create, update, remove, addComment, removeComment }

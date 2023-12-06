@@ -25,10 +25,20 @@ const blogs = createSlice({
 			const updatedBlog = { ...blog, comments: blog.comments.concat(comment) }
 			return state.map(b => (b.id === updatedBlog.id ? updatedBlog : b))
 		},
+		deleteComment(state, action) {
+			const removedComment = action.payload
+			const blog = state.find(b => b.id === removedComment.blog)
+			const updatedBlog = {
+				...blog,
+				comments: blog.comments.filter(c => c.id !== removedComment.id),
+			}
+			return state.map(b => (b.id === updatedBlog.id ? updatedBlog : b))
+		},
 	},
 })
 
-const { setBlogs, appendBlog, replaceBlog, deleteBlog, appendComment } = blogs.actions
+const { setBlogs, appendBlog, replaceBlog, deleteBlog, appendComment, deleteComment } =
+	blogs.actions
 
 export const initializeBlogs = () => {
 	return async dispatch => {
@@ -62,6 +72,13 @@ export const addComment = commentObject => {
 	return async dispatch => {
 		const comment = await blogService.addComment(commentObject)
 		dispatch(appendComment(comment))
+	}
+}
+
+export const removeComment = commentObject => {
+	return async dispatch => {
+		await blogService.removeComment(commentObject)
+		dispatch(deleteComment(commentObject))
 	}
 }
 

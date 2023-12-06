@@ -15,4 +15,11 @@ blogRouter.post('/:id/comments', async (req, res) => {
 	res.status(201).json(savedComment)
 })
 
+blogRouter.delete('/:blog_id/comments/:id', async (req, res) => {
+	const comment = await Comment.findById(req.params.id)
+
+	await comment.deleteOne()
+	res.status(204).end()
+})
+
 module.exports = blogRouter

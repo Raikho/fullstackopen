@@ -53,6 +53,9 @@ blogRouter.put('/:id', middleware.userExtractor, async (req, res) => {
 		{ title, author, url, likes },
 		{ new: true, runValidators: true, contect: 'query' }
 	)
+		.populate('user', { username: 1, name: 1 })
+		.populate('comments', { text: 1, blog: 1 })
+
 	res.json(updatedBlog)
 })
 

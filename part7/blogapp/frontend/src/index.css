@@ -1,5 +1,5 @@
 body {
-	padding: 10px;
+	/* padding: 10px; */
 }
 
 ul,
@@ -12,15 +12,12 @@ li.decorated {
 	list-style-type: disc;
 }
 
-.navBar {
-	background-color: lightgray;
-	padding: 5px;
+#logout-button {
+	margin-left: 10px;
 }
-.navLink {
-	padding: 0px 5px 0px 5px;
-}
-.navLink.active {
-	font-weight: bold;
+
+a {
+	text-decoration: none;
 }
 
 .blogItem {
@@ -49,26 +46,6 @@ button.remove {
 }
 .message.error {
 	background-color: #eebbb5;
-}
-
-.message.hey {
-	width: max-content;
-	padding: 10px;
-	margin-bottom: 10px;
-
-	background: lightgray;
-	font-size: 20px;
-	font-weight: bold;
-
-	border-style: solid;
-	border-radius: 5px;
-}
-
-.error {
-	/* color: red; */
-}
-.success {
-	/* color: green; */
 }
 
 .hidden {

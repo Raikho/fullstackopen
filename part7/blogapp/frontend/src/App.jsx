@@ -32,29 +32,32 @@ const App = () => {
 
 	return (
 		<Router>
-			<Notification />
-
 			{user === null ? (
-				<LoginForm />
+				<div>
+					<Notification />
+					<LoginForm />
+				</div>
 			) : (
 				<div>
 					<BlogHeader />
-					<h1>blog app</h1>
-					<Routes>
-						<Route path='/' element={<BlogList />} />
-						<Route path='/users' element={<UserList />} />
-						<Route path='/users/:id' element={<User />} />
-						<Route
-							path='/blogs'
-							element={
-								<>
-									<BlogForm />
-									<BlogList />
-								</>
-							}
-						/>
-						<Route path='/blogs/:id' element={<Blog />} />
-					</Routes>
+					<Notification />
+					<div style={{ padding: '10px' }}>
+						<Routes>
+							<Route path='/' element={<BlogList />} />
+							<Route path='/users' element={<UserList />} />
+							<Route path='/users/:id' element={<User />} />
+							<Route
+								path='/blogs'
+								element={
+									<>
+										<BlogForm />
+										<BlogList />
+									</>
+								}
+							/>
+							<Route path='/blogs/:id' element={<Blog />} />
+						</Routes>
+					</div>
 				</div>
 			)}
 		</Router>

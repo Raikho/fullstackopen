@@ -3,6 +3,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import blogService from './services/blogs'
 import storage from './services/storage'
@@ -36,7 +37,7 @@ const App = () => {
 			{user === null ? (
 				<LoginForm />
 			) : (
-				<>
+				<div>
 					<BlogHeader />
 					<h1>blog app</h1>
 					<Routes>
@@ -54,7 +55,7 @@ const App = () => {
 						/>
 						<Route path='/blogs/:id' element={<Blog />} />
 					</Routes>
-				</>
+				</div>
 			)}
 		</Router>
 	)

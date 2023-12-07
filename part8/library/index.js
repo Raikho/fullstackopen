@@ -114,6 +114,13 @@ const resolvers = {
     allBooks: () => books,
     allAuthors: () => authors,
   },
+
+  Author: {
+    name: root => root.name,
+    born: root => root.born,
+    bookCount: root =>
+      books.reduce((prev, b) => prev + (b.author === root.name ? 1 : 0), 0),
+  },
 }
 
 const server = new ApolloServer({

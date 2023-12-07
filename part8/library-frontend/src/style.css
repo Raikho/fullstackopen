@@ -1,0 +1,24 @@
+:root {
+  font-family: Helvetica, sans-serif;
+}
+
+.navbar {
+  margin-bottom: 10px;
+}
+
+a {
+  margin: 5px;
+  padding: 5px;
+  text-decoration: none;
+  border: 1px solid black;
+  border-radius: 3px;
+  color: black;
+  background-color: lightgray;
+}
+a.active {
+  font-weight: bold;
+  background-color: goldenrod;
+}
+a:hover {
+  filter: brightness(1.1);
+}

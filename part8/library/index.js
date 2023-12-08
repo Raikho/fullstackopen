@@ -1,6 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v1: uuid } = require('uuid')
+const { v4: uuid } = require('uuid')
 let authors = [
   {
     name: 'Robert Martin',
@@ -90,7 +90,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int
-    author: String
+    author: String!
     genres: [String]!
     id: ID!
   }
@@ -106,7 +106,7 @@ const typeDefs = `
     addBook(
       title: String!
       published: Int
-      author: String
+      author: String!
       genres: [String]!
     ): Book
     editAuthor(

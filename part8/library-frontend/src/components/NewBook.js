@@ -1,23 +1,32 @@
+import { useState, useContext } from 'react'
 import { useMutation } from '@apollo/client'
-import { useState } from 'react'
-
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
+import { NoteContext } from '../App'
 
-const NewBook = props => {
+const NewBook = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+
+  const { setNote } = useContext(NoteContext)
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: error =>
+      setNote(error.graphQLErrors.map(e => e.message).join('\n')),
   })
 
   const submit = async event => {
     event.preventDefault()
-
-    const variables = { title, author, published: Number(published), genres }
-    createBook({ variables })
+    createBook({
+      variables: {
+        title: title || null,
+        author: author || null,
+        published: Number(published) || null,
+        genres: genres || null,
+      },
+    })
 
     setTitle('')
     setPublished('')

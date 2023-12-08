@@ -1,14 +1,15 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, CHANGE_BIRTH_DATE } from '../queries'
 import { NoteContext } from '../App'
+import { useField, resetFields } from '../hooks'
 
 const Authors = () => {
-  const [name, setName] = useState('')
-  const [born, setBorn] = useState('')
+  const name = useField('text')
+  const born = useField('number')
 
-  const { setNote } = useContext(NoteContext)
   const result = useQuery(ALL_AUTHORS)
+  const { setNote } = useContext(NoteContext)
   const [editAuthor] = useMutation(CHANGE_BIRTH_DATE, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: error =>
@@ -18,11 +19,10 @@ const Authors = () => {
   const submit = async event => {
     event.preventDefault()
     editAuthor({
-      variables: { name: name || null, setBornTo: Number(born) || null },
+      variables: { name: name.value || null, setBornTo: born.value || null },
     })
 
-    setName('')
-    setBorn('')
+    resetFields([name, born])
   }
 
   if (result.loading) return <div>is loading...</div>
@@ -50,17 +50,9 @@ const Authors = () => {
       <h3>Change author birthdate</h3>
       <form onSubmit={submit}>
         <div>name</div>
-        <input
-          type='text'
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-        />
+        <input {...name.atts} />
         <div>born</div>
-        <input
-          type='number'
-          value={born}
-          onChange={({ target }) => setBorn(target.value)}
-        />
+        <input {...born.atts} />
         <button type='submit'>Submit Change</button>
       </form>
     </div>

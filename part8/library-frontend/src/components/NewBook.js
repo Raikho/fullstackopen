@@ -2,12 +2,13 @@ import { useState, useContext } from 'react'
 import { useMutation } from '@apollo/client'
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
 import { NoteContext } from '../App'
+import { useField, resetFields } from '../hooks'
 
 const NewBook = () => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [published, setPublished] = useState('')
-  const [genre, setGenre] = useState('')
+  const title = useField('text')
+  const author = useField('text')
+  const published = useField('number')
+  const genre = useField('text')
   const [genres, setGenres] = useState([])
 
   const { setNote } = useContext(NoteContext)
@@ -19,57 +20,39 @@ const NewBook = () => {
 
   const submit = async event => {
     event.preventDefault()
+
     createBook({
       variables: {
-        title: title || null,
-        author: author || null,
-        published: Number(published) || null,
+        title: title.value || null,
+        author: author.value || null,
+        published: Number(published.value) || null,
         genres: genres || null,
       },
     })
 
-    setTitle('')
-    setPublished('')
-    setAuthor('')
+    resetFields([title, published, author, genre])
     setGenres([])
-    setGenre('')
   }
 
   const addGenre = () => {
-    setGenres(genres.concat(genre))
-    setGenre('')
+    setGenres(genres.concat(genre.value))
+    genre.reset()
   }
 
   return (
     <div>
       <form onSubmit={submit}>
         <div>
-          title
-          <input
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
+          title <input {...title.atts} />
         </div>
         <div>
-          author
-          <input
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+          author <input {...author.atts} />
         </div>
         <div>
-          published
-          <input
-            type='number'
-            value={published}
-            onChange={({ target }) => setPublished(target.value)}
-          />
+          published <input {...published.atts} />
         </div>
         <div>
-          <input
-            value={genre}
-            onChange={({ target }) => setGenre(target.value)}
-          />
+          <input {...genre.atts} />
           <button onClick={addGenre} type='button'>
             add genre
           </button>

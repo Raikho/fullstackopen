@@ -14,7 +14,7 @@ import Notification from './components/Notification'
 export const NoteContext = createContext(null)
 
 const App = () => {
-  const [note, setNote] = useState('Initial Note')
+  const [note, setNote] = useState('')
 
   return (
     <NoteContext.Provider value={{ note, setNote }}>

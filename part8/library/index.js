@@ -1,10 +1,9 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v4: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
-const { initialAuthors, initialBooks } = require('./utils')
+const { initialAuthors, initialBooks, tryGQL } = require('./utils')
 const Author = require('./models/author')
 const Book = require('./models/book')
 
@@ -106,9 +105,8 @@ const resolvers = {
           author = new Author({ name: args.author })
           author.save()
         }
-
         const book = new Book({ ...args, author: author.id })
-        return book.save()
+        return await book.save()
       } catch (error) {
         throw new GraphQLError('Saving new book failed', {
           extensions: {

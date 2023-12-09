@@ -88,4 +88,19 @@ const initialBooks = initialBooksId.map(b => ({
   genres: b.genres,
 }))
 
-module.exports = { initialAuthors, initialBooks }
+const tryGQL = async (func, { errMsg, errCode, errArgs }) => {
+  try {
+    func()
+  } catch (error) {
+    throw new GraphQLError(errMsg, {
+      extensions: {
+        code: errCode,
+        invalidArgs,
+        errArgs,
+        error,
+      },
+    })
+  }
+}
+
+module.exports = { initialAuthors, initialBooks, tryGQL }

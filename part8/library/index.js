@@ -19,12 +19,17 @@ mongoose
     console.log('connected to MongoDB')
     await Author.deleteMany({})
     await Book.deleteMany({})
-    initialAuthors.forEach(async a => {
+
+    const savedAuthors = []
+    initialAuthors.forEach(a => {
       const author = new Author({ ...a })
-      author.save()
+      savedAuthors.push(author)
     })
-    initialBooks.forEach(async b => {
-      const book = new Book({ ...b })
+    savedAuthors.forEach(a => a.save())
+
+    initialBooks.forEach(b => {
+      const author = savedAuthors.find(a => a.name === b.author)
+      const book = new Book({ ...b, author: author.id })
       book.save()
     })
   })
@@ -77,20 +82,25 @@ const resolvers = {
       if (args.author) query.find({ author: args.author })
       if (args.genre) query.find({ genres: args.genre })
 
-      return await query.exec()
+      return query.exec()
     },
     allAuthors: async () => Author.find({}),
   },
   Author: {
-    name: root => root.name,
-    born: root => root.born,
-    id: root => root.id,
     bookCount: async root => {
       const books = await Book.find({})
       return books.reduce(
-        (prev, b) => prev + (b.author === root.name ? 1 : 0),
+        (prev, b) => (b.author === root.name ? prev + 1 : prev),
         0
       )
+    },
+  },
+  Book: {
+    author: async root => {
+      console.log('finding author with root', root)
+      const author = await Author.findById(root.author)
+      console.log('found author', author)
+      return author.name
     },
   },
   Mutation: {
@@ -98,17 +108,17 @@ const resolvers = {
       const authors = await Author.find({})
       if (!authors.map(a => a.name).includes(args.author)) {
         const newAuthor = new Author({ name: args.author })
-        newAuthor.save()
+        await newAuthor.save()
       }
 
-      const book = new Book({ ...args })
+      const author = Author.find({ name: args.author })
+      const book = new Book({ ...args, author: author.id })
       return book.save()
     },
     addAuthor: async (root, args) => {
       const author = new Author({ ...args })
       return author.save()
     },
-
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
       author.born = args.setBornTo

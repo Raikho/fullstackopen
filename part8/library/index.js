@@ -46,7 +46,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int
-    author: String!
+    author: Author!
     genres: [String]!
     id: ID!
   }
@@ -61,8 +61,8 @@ const typeDefs = `
   type Mutation {
     addBook(
       title: String!
-      published: Int
       author: String!
+      published: Int
       genres: [String]!
     ): Book
     addAuthor(
@@ -90,39 +90,65 @@ const resolvers = {
     bookCount: async root => {
       const books = await Book.find({})
       return books.reduce(
-        (prev, b) => (b.author === root.name ? prev + 1 : prev),
+        (prev, b) => (b.author.equals(root.id) ? prev + 1 : prev),
         0
       )
     },
   },
   Book: {
-    author: async root => {
-      console.log('finding author with root', root)
-      const author = await Author.findById(root.author)
-      console.log('found author', author)
-      return author.name
-    },
+    author: async root => await Author.findById(root.author),
   },
   Mutation: {
     addBook: async (root, args) => {
-      const authors = await Author.find({})
-      if (!authors.map(a => a.name).includes(args.author)) {
-        const newAuthor = new Author({ name: args.author })
-        await newAuthor.save()
-      }
+      try {
+        const authors = await Author.find({})
+        let author = null
 
-      const author = Author.find({ name: args.author })
-      const book = new Book({ ...args, author: author.id })
-      return book.save()
+        if (!authors.map(a => a.name).includes(args.author)) {
+          author = new Author({ name: args.author })
+          await author.save()
+        }
+
+        const book = new Book({ ...args, author: author.id })
+        return book.save()
+      } catch (error) {
+        throw new GraphQLError('Saving new book failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.author,
+            error,
+          },
+        })
+      }
     },
     addAuthor: async (root, args) => {
       const author = new Author({ ...args })
-      return author.save()
+      try {
+        return author.save()
+      } catch (error) {
+        throw new GraphQLError('Saving new author failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
       author.born = args.setBornTo
-      return author.save()
+      try {
+        return author.save()
+      } catch (error) {
+        throw new GraphQLError('Saving author birth date failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error,
+          },
+        })
+      }
     },
   },
 }

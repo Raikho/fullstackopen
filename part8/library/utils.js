@@ -1,4 +1,4 @@
-const initialAuthors = [
+const initialAuthorsId = [
   {
     name: 'Robert Martin',
     id: '1afa51ab0-344d-11e9-a414-719c6709cf3e',
@@ -24,7 +24,7 @@ const initialAuthors = [
   },
 ]
 
-const initialBooks = [
+const initialBooksId = [
   {
     title: 'Clean Code',
     published: 2008,
@@ -75,5 +75,17 @@ const initialBooks = [
     genres: ['classic', 'revolution'],
   },
 ]
+
+const initialAuthors = initialAuthorsId.map(a => ({
+  name: a.name,
+  born: a.born,
+}))
+
+const initialBooks = initialBooksId.map(b => ({
+  title: b.title,
+  published: b.published,
+  author: b.author,
+  genres: b.genres,
+}))
 
 module.exports = { initialAuthors, initialBooks }

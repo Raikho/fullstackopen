@@ -101,12 +101,10 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       try {
-        const authors = await Author.find({})
-        let author = null
-
-        if (!authors.map(a => a.name).includes(args.author)) {
+        let author = await Author.findOne({ name: args.author })
+        if (!author) {
           author = new Author({ name: args.author })
-          await author.save()
+          author.save()
         }
 
         const book = new Book({ ...args, author: author.id })

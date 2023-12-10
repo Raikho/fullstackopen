@@ -2,10 +2,12 @@ const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
+const jwt = require('jsonwebtoken')
 
 const { initialAuthors, initialBooks, tryGQL } = require('./utils')
 const Author = require('./models/author')
 const Book = require('./models/book')
+const User = require('./models/user')
 
 mongoose.set('strictQuery', false)
 dotenv.config()
@@ -18,6 +20,7 @@ mongoose
     console.log('connected to MongoDB')
     await Author.deleteMany({})
     await Book.deleteMany({})
+    await User.deleteMany({})
 
     const savedAuthors = []
     initialAuthors.forEach(a => {
@@ -31,6 +34,12 @@ mongoose
       const book = new Book({ ...b, author: author.id })
       book.save()
     })
+
+    const user = new User({
+      username: 'Bob Smith',
+      favoriteGenre: 'refactoring',
+    })
+    user.save()
   })
   .catch(err => console.log('error connecting to MongoDB:', err.message))
 
@@ -50,11 +59,22 @@ const typeDefs = `
     id: ID!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author]
+    me: User
   }
 
   type Mutation {
@@ -68,7 +88,17 @@ const typeDefs = `
       name: String!
       born: Int
     ): Author
-    editAuthor(name: String, setBornTo: Int): Author
+    editAuthor(
+      name: String, setBornTo: Int
+    ): Author
+    createUser (
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login (
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -77,6 +107,7 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
+      // console.log('context is: ', context) // debug
       const query = Book.find({})
       if (args.author) query.find({ author: args.author })
       if (args.genre) query.find({ genres: args.genre })
@@ -84,6 +115,7 @@ const resolvers = {
       return query.exec()
     },
     allAuthors: async () => Author.find({}),
+    me: async (root, args, context) => context.currentUser,
   },
   Author: {
     bookCount: async root => {
@@ -146,6 +178,37 @@ const resolvers = {
         })
       }
     },
+    createUser: async (root, args) => {
+      const username = args.username
+      const favoriteGenre = args.favoriteGenre
+      const user = new User({ username, favoriteGenre })
+      return await user.save().catch(err => {
+        throw new GraphQLError('Creating the user failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.username,
+            err,
+          },
+        })
+      })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+      if (!user || args.password !== '1234') {
+        throw new GraphQLError('wrong credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+
+      return { value: jwt.sign(userForToken, process.env.SECRET) }
+    },
   },
 }
 
@@ -156,6 +219,14 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.startsWith('Bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

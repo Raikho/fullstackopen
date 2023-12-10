@@ -1,3 +1,5 @@
+const { GraphQLError } = require('graphql')
+
 const initialAuthorsId = [
   {
     name: 'Robert Martin',
@@ -88,19 +90,10 @@ const initialBooks = initialBooksId.map(b => ({
   genres: b.genres,
 }))
 
-const tryGQL = async (func, { errMsg, errCode, errArgs }) => {
-  try {
-    func()
-  } catch (error) {
-    throw new GraphQLError(errMsg, {
-      extensions: {
-        code: errCode,
-        invalidArgs,
-        errArgs,
-        error,
-      },
-    })
-  }
+const authError = () => {
+  throw new GraphQLError('Client is not authorized to perform this action', {
+    extensions: { code: 'UNAUTHORIZED' },
+  })
 }
 
-module.exports = { initialAuthors, initialBooks, tryGQL }
+module.exports = { initialAuthors, initialBooks, authError }

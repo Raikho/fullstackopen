@@ -4,10 +4,11 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
 
-const { initialAuthors, initialBooks, tryGQL } = require('./utils')
+const { initialAuthors, initialBooks, authError } = require('./utils')
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+const { GraphQLError } = require('graphql')
 
 mongoose.set('strictQuery', false)
 dotenv.config()
@@ -130,7 +131,9 @@ const resolvers = {
     author: async root => await Author.findById(root.author),
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) authError()
+
       try {
         let author = await Author.findOne({ name: args.author })
         if (!author) {
@@ -149,7 +152,9 @@ const resolvers = {
         })
       }
     },
-    addAuthor: async (root, args) => {
+    addAuthor: async (root, args, context) => {
+      if (!context.currentUser) authError()
+
       const author = new Author({ ...args })
       try {
         return author.save()
@@ -163,7 +168,9 @@ const resolvers = {
         })
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) authError()
+
       const author = await Author.findOne({ name: args.name })
       author.born = args.setBornTo
       try {

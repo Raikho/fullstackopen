@@ -108,7 +108,6 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      // console.log('context is: ', context) // debug
       const query = Book.find({})
       if (args.author) query.find({ author: args.author })
       if (args.genre) query.find({ genres: args.genre })

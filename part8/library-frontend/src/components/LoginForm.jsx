@@ -1,17 +1,39 @@
-import { useContext } from 'react'
-import { NoteContext } from '../App'
+import { useContext, useEffect } from 'react'
+import { useMutation } from '@apollo/client'
 
+import { NoteContext } from '../App'
+import { LOGIN } from '../queries'
 import { useField } from '../hooks'
+import storage from '../services/storage'
 
 const LoginForm = ({ setToken }) => {
   const username = useField('text')
   const password = useField('text') // todo: change to pass
 
   const { setNote } = useContext(NoteContext)
+  const [login, result] = useMutation(LOGIN, {
+    onError: error =>
+      setNote(error.graphQLErrors.map(e => e.message).join('\n')),
+  })
 
-  const handleLogin = event => {
+  useEffect(() => {
+    if (result.data) {
+      const token = result.data.login.value
+      setToken(token)
+      storage.save('library-user-token', token)
+    }
+  }, [result.data])
+
+  const handleLogin = async event => {
     event.preventDefault()
-    setNote('logging in...')
+
+    console.log(`logging in with ${username.value}, ${password.value}`)
+    login({
+      variables: {
+        username: username.value,
+        password: password.value,
+      },
+    })
   }
 
   return (

@@ -21,7 +21,7 @@ mongoose
     console.log('connected to MongoDB')
     await Author.deleteMany({})
     await Book.deleteMany({})
-    await User.deleteMany({})
+    // await User.deleteMany({})
 
     const savedAuthors = []
     initialAuthors.forEach(a => {
@@ -36,11 +36,17 @@ mongoose
       book.save()
     })
 
-    const user = new User({
-      username: 'Bob Smith',
-      favoriteGenre: 'refactoring',
-    })
-    user.save()
+    const user = await User.findOne({ username: 'bob_smith' })
+    if (!user) {
+      console.log('no user found, creating user "bob_smith"...')
+      const user = new User({
+        username: 'bob_smith',
+        favoriteGenre: 'refactoring',
+      })
+      user.save()
+    } else {
+      console.log('success, user "bob_smith" found')
+    }
   })
   .catch(err => console.log('error connecting to MongoDB:', err.message))
 
@@ -226,10 +232,12 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
+    console.log('authorizing...')
     const auth = req ? req.headers.authorization : null
     if (auth && auth.startsWith('Bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
       const currentUser = await User.findById(decodedToken.id)
+      console.log('==> Authorized, current user: ', currentUser.username)
       return { currentUser }
     }
   },

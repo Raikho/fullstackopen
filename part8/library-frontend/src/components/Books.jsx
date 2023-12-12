@@ -2,16 +2,12 @@ import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = props => {
-  console.log('finding query...')
   const result = useQuery(ALL_BOOKS)
   if (result.loading) return <div>is loading...</div>
 
-  console.log('query loaded...')
-  console.log(result.data)
   return (
     <div>
       <h2>books</h2>
-
       <table>
         <tbody>
           <tr>

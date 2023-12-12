@@ -30,8 +30,11 @@ const LoginForm = ({ setToken }) => {
     console.log(`logging in with ${username.value}, ${password.value}`)
     login({
       variables: {
-        username: username.value,
-        password: password.value,
+        // TODO: restore
+        username: 'bob_smith',
+        password: '1234',
+        // username: username.value,
+        // password: password.value,
       },
     })
   }

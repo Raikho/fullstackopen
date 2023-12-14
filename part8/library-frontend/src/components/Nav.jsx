@@ -12,6 +12,7 @@ const Nav = ({ handleLogout }) => {
       <NavLink to='/books'>Books</NavLink>
       <Hidable showOn='loggedIn'>
         <NavLink to='/addBook'>Add Book</NavLink>
+        <NavLink to='/recommend'>Recommend</NavLink>
         <span>{name} logged in</span>
         <Link onClick={handleLogout}>logout</Link>
       </Hidable>

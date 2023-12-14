@@ -10,6 +10,7 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import storage from './services/storage'
 import Nav from './components/Nav'
+import Recommend from './components/Recommend'
 import { USER_INFO } from './queries'
 
 export const NoteContext = createContext(null)
@@ -58,6 +59,7 @@ const App = () => {
           <Route path='/' element={<Authors />} />
           <Route path='/authors' element={<Authors />} />
           <Route path='/books' element={<Books />} />
+          <Route path='/recommend' element={<Recommend />} />
           <Route path='/addBook' element={<NewBook />} />
           <Route path='/login' element={<LoginForm />} />
         </Routes>

@@ -22,3 +22,13 @@ a.active {
 a:hover {
   filter: brightness(1.1);
 }
+
+ul.genre-button-list {
+  padding: 0;
+}
+li.genre-button {
+  display: inline-block;
+}
+li.genre-button.active > button {
+  background-color: lightblue;
+}

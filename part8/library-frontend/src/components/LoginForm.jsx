@@ -5,12 +5,14 @@ import { NoteContext } from '../App'
 import { LOGIN } from '../queries'
 import { useField } from '../hooks'
 import storage from '../services/storage'
+import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = () => {
   const username = useField('text')
   const password = useField('text') // todo: change to pass
+  const navigate = useNavigate()
 
-  const { setNote } = useContext(NoteContext)
+  const { setNote, token, setToken } = useContext(NoteContext)
   const [login, result] = useMutation(LOGIN, {
     onError: error =>
       setNote(error.graphQLErrors.map(e => e.message).join('\n')),
@@ -19,8 +21,11 @@ const LoginForm = ({ setToken }) => {
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value
+      // TODO: add and set name and username values
       setToken(token)
+      console.log('login completed!', token)
       storage.save('library-user-token', token)
+      navigate('/')
     }
   }, [result.data])
 

@@ -14,7 +14,7 @@ import NewBook from './components/NewBook'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import storage from './services/storage'
-import Hidable from './components/Hidable'
+import Nav from './components/Nav'
 
 export const NoteContext = createContext(null)
 
@@ -35,43 +35,17 @@ const App = () => {
     client.resetStore()
   }
 
-  // if (!token) {
-  //   return (
-  //     <div>
-  //       <NoteContext.Provider value={{ note, setNote }}>
-  //         <Hidable token={token} showWhenLoggedIn={true}>
-  //           SHOW WHEN LOGGED IN
-  //         </Hidable>
-  //         <Hidable token={token} showWhenLoggedOut={true}>
-  //           SHOW WHEN LOGGED OUT
-  //         </Hidable>
-  //         <h2>Login</h2>
-  //         <Notification />
-  //         <LoginForm setToken={setToken} />
-  //       </NoteContext.Provider>
-  //     </div>
-  //   )
-  // }
-
   return (
     <NoteContext.Provider value={{ note, setNote, token, setToken }}>
-      <Hidable showOn='loggedOut'>
-        <h2>Login</h2>
-        <LoginForm setToken={setToken} />
-      </Hidable>
       <Router>
-        <div className='navbar'>
-          <NavLink to='/authors'>Authors</NavLink>
-          <NavLink to='/books'>Books</NavLink>
-          <NavLink to='/addBook'>Add Book</NavLink>
-          <button onClick={logout}>logout</button>
-        </div>
+        <Nav handleLogout={logout} />
         <Notification />
         <Routes>
           <Route path='/' element={<Authors />} />
           <Route path='/authors' element={<Authors />} />
           <Route path='/books' element={<Books />} />
           <Route path='/addBook' element={<NewBook />} />
+          <Route path='/login' element={<LoginForm />} />
         </Routes>
       </Router>
     </NoteContext.Provider>

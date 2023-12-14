@@ -41,6 +41,7 @@ mongoose
       console.log('no user found, creating user "bob_smith"...')
       const user = new User({
         username: 'bob_smith',
+        name: 'Bob Smith',
         favoriteGenre: 'refactoring',
       })
       user.save()
@@ -68,6 +69,7 @@ const typeDefs = `
 
   type User {
     username: String!
+    name: String!
     favoriteGenre: String!
     id: ID!
   }
@@ -100,6 +102,7 @@ const typeDefs = `
     ): Author
     createUser (
       username: String!
+      name: String!
       favoriteGenre: String!
     ): User
     login (
@@ -193,7 +196,9 @@ const resolvers = {
     createUser: async (root, args) => {
       const username = args.username
       const favoriteGenre = args.favoriteGenre
-      const user = new User({ username, favoriteGenre })
+      const name = args.name
+
+      const user = new User({ username, name, favoriteGenre })
       return await user.save().catch(err => {
         throw new GraphQLError('Creating the user failed', {
           extensions: {
@@ -216,6 +221,7 @@ const resolvers = {
 
       const userForToken = {
         username: user.username,
+        name: user.name,
         id: user._id,
       }
 

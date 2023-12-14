@@ -12,7 +12,7 @@ const LoginForm = () => {
   const password = useField('text') // todo: change to pass
   const navigate = useNavigate()
 
-  const { setNote, token, setToken } = useContext(NoteContext)
+  const { setNote, setToken, setUsername, setName } = useContext(NoteContext)
   const [login, result] = useMutation(LOGIN, {
     onError: error =>
       setNote(error.graphQLErrors.map(e => e.message).join('\n')),
@@ -23,9 +23,9 @@ const LoginForm = () => {
       const token = result.data.login.value
       // TODO: add and set name and username values
       setToken(token)
-      console.log('login completed!', token)
+      console.log('login completed!', token) // debug
       storage.save('library-user-token', token)
-      navigate('/')
+      navigate('/authors')
     }
   }, [result.data])
 

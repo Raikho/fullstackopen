@@ -1,11 +1,6 @@
 import { useState, createContext, useEffect } from 'react'
-import { useApolloClient } from '@apollo/client'
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  NavLink,
-} from 'react-router-dom'
+import { useApolloClient, useQuery } from '@apollo/client'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import './style.css'
 import Authors from './components/Authors'
@@ -15,19 +10,36 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import storage from './services/storage'
 import Nav from './components/Nav'
+import { USER_INFO } from './queries'
 
 export const NoteContext = createContext(null)
 
 const App = () => {
   const [note, setNote] = useState('')
   const [token, setToken] = useState(null)
+  const [username, setUsername] = useState('')
+  const [name, setName] = useState('')
+  const contextValues = { note, setNote, token, setToken, username, name }
+
   const client = useApolloClient()
+  const userResult = useQuery(USER_INFO)
 
   useEffect(() => {
-    console.log('token is changed to', token)
-    const t = storage.load('library-user-token')
-    if (t) setToken(t)
-  }, [token])
+    const setupToken = async () => {
+      const storedToken = storage.load('library-user-token')
+      if (storedToken) {
+        setToken(storedToken)
+        await client.refetchQueries({ include: [USER_INFO] })
+      }
+    }
+    setupToken()
+  }, [token, client])
+
+  useEffect(() => {
+    if (!userResult.data) return
+    setUsername(userResult.data.me.username)
+    setName(userResult.data.me.name)
+  }, [userResult])
 
   const logout = () => {
     setToken(null)
@@ -36,7 +48,7 @@ const App = () => {
   }
 
   return (
-    <NoteContext.Provider value={{ note, setNote, token, setToken }}>
+    <NoteContext.Provider value={contextValues}>
       <Router>
         <Nav handleLogout={logout} />
         <Notification />

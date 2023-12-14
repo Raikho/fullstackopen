@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
   const username = useField('text')
-  const password = useField('text') // todo: change to pass
+  const password = useField('password')
   const navigate = useNavigate()
 
-  const { setNote, setToken, setUsername, setName } = useContext(NoteContext)
+  const { setNote, setToken } = useContext(NoteContext)
   const [login, result] = useMutation(LOGIN, {
     onError: error =>
       setNote(error.graphQLErrors.map(e => e.message).join('\n')),
@@ -21,9 +21,8 @@ const LoginForm = () => {
   useEffect(() => {
     if (result.data) {
       const token = result.data.login.value
-      // TODO: add and set name and username values
       setToken(token)
-      console.log('login completed!', token) // debug
+      console.log('login completed!', token)
       storage.save('library-user-token', token)
       navigate('/authors')
     }
@@ -35,11 +34,8 @@ const LoginForm = () => {
     console.log(`logging in with ${username.value}, ${password.value}`)
     login({
       variables: {
-        // TODO: restore
-        username: 'bob_smith',
-        password: '1234',
-        // username: username.value,
-        // password: password.value,
+        username: username.value,
+        password: password.value,
       },
     })
   }

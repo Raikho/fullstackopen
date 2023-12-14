@@ -36,7 +36,7 @@ const App = () => {
   }, [token, client])
 
   useEffect(() => {
-    if (!userResult.data) return
+    if (!userResult || !userResult.data || !userResult.data.me) return
     setUsername(userResult.data.me.username)
     setName(userResult.data.me.name)
   }, [userResult])
@@ -45,6 +45,8 @@ const App = () => {
     setToken(null)
     storage.clear()
     client.resetStore()
+    setUsername('')
+    setName('')
   }
 
   return (

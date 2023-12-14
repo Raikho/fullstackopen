@@ -1,10 +1,12 @@
 import { useState, createContext, useEffect } from 'react'
+import { useApolloClient } from '@apollo/client'
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   NavLink,
 } from 'react-router-dom'
+
 import './style.css'
 import Authors from './components/Authors'
 import Books from './components/Books'
@@ -12,7 +14,7 @@ import NewBook from './components/NewBook'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import storage from './services/storage'
-import { useApolloClient } from '@apollo/client'
+import Hidable from './components/Hidable'
 
 export const NoteContext = createContext(null)
 
@@ -22,6 +24,7 @@ const App = () => {
   const client = useApolloClient()
 
   useEffect(() => {
+    console.log('token is changed to', token)
     const t = storage.load('library-user-token')
     if (t) setToken(t)
   }, [token])
@@ -32,20 +35,30 @@ const App = () => {
     client.resetStore()
   }
 
-  if (!token) {
-    return (
-      <div>
-        <NoteContext.Provider value={{ note, setNote }}>
-          <h2>Login</h2>
-          <Notification />
-          <LoginForm setToken={setToken} />
-        </NoteContext.Provider>
-      </div>
-    )
-  }
+  // if (!token) {
+  //   return (
+  //     <div>
+  //       <NoteContext.Provider value={{ note, setNote }}>
+  //         <Hidable token={token} showWhenLoggedIn={true}>
+  //           SHOW WHEN LOGGED IN
+  //         </Hidable>
+  //         <Hidable token={token} showWhenLoggedOut={true}>
+  //           SHOW WHEN LOGGED OUT
+  //         </Hidable>
+  //         <h2>Login</h2>
+  //         <Notification />
+  //         <LoginForm setToken={setToken} />
+  //       </NoteContext.Provider>
+  //     </div>
+  //   )
+  // }
 
   return (
-    <NoteContext.Provider value={{ note, setNote }}>
+    <NoteContext.Provider value={{ note, setNote, token, setToken }}>
+      <Hidable showOn='loggedOut'>
+        <h2>Login</h2>
+        <LoginForm setToken={setToken} />
+      </Hidable>
       <Router>
         <div className='navbar'>
           <NavLink to='/authors'>Authors</NavLink>

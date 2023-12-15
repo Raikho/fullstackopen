@@ -1,6 +1,11 @@
 import { useState, createContext, useEffect } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom'
 
 import './style.css'
 import Authors from './components/Authors'
@@ -14,14 +19,15 @@ import Recommend from './components/Recommend'
 import { USER_INFO } from './queries'
 
 export const NoteContext = createContext(null)
+const clearedUser = { name: '', username: '', favoriteGenre: '' }
 
 const App = () => {
   const [note, setNote] = useState('')
   const [token, setToken] = useState(null)
-  const [username, setUsername] = useState('')
-  const [name, setName] = useState('')
-  const contextValues = { note, setNote, token, setToken, username, name }
+  const [user, setUser] = useState(clearedUser)
+  const contextValues = { note, setNote, token, setToken, user, setUser }
 
+  // const navigate = useNavigate()
   const client = useApolloClient()
   const userResult = useQuery(USER_INFO)
 
@@ -38,16 +44,15 @@ const App = () => {
 
   useEffect(() => {
     if (!userResult || !userResult.data || !userResult.data.me) return
-    setUsername(userResult.data.me.username)
-    setName(userResult.data.me.name)
+    setUser(userResult.data.me)
+    console.log('user:', userResult.data.me) // debug
   }, [userResult])
 
   const logout = () => {
     setToken(null)
     storage.clear()
     client.resetStore()
-    setUsername('')
-    setName('')
+    setUser(clearedUser)
   }
 
   return (

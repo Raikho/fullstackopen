@@ -16,9 +16,10 @@ const Recommend = () => {
 
   return (
     <div>
-      <h2>
-        Recommended books for {user.name} {user.favoriteGenre}
-      </h2>
+      <h2>Recommended books for {user.name}</h2>
+      <div>
+        books in your favorite genre <strong>{user.favoriteGenre}</strong>
+      </div>
       <BookList books={filteredBooks} />
     </div>
   )

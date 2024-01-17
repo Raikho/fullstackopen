@@ -14,12 +14,6 @@ const NewBook = () => {
   const { setNote } = useContext(NoteContext)
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
-    // update: (cache, response) => {
-    //   cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-    //     allBooks = allBooks.concat(response.data.addBook)
-    //     return { allBooks }
-    //   })
-    // },
     onError: error =>
       setNote(error.graphQLErrors.map(e => e.message).join('\n')),
   })

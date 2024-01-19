@@ -1,5 +1,15 @@
 const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
+const { expressMiddleware } = require('@apollo/server/express4')
+const {
+  ApolloServerPluginDrainHttpServer,
+} = require('@apollo/server/plugin/drainHttpServer')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { startStandaloneServer } = require('@apollo/server/standalone') // todo: delete
+
+const express = require('express')
+const cors = require('cors')
+const http = require('http')
+
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
@@ -52,23 +62,39 @@ mongoose
   })
   .catch(err => console.log('error connecting to MongoDB:', err.message))
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-})
+const start = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
+  const server = new ApolloServer({
+    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  })
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    console.log('authorizing...')
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
-      const currentUser = await User.findById(decodedToken.id)
-      console.log('==> Authorized, current user: ', currentUser.username)
-      return { currentUser }
-    }
-  },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+  await server.start()
+
+  app.use(
+    '/',
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => {
+        console.log('authorizing...')
+        const auth = req ? req.headers.authorization : null
+        if (auth && auth.startsWith('Bearer ')) {
+          const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
+          const currentUser = await User.findById(decodedToken.id)
+          console.log('==> Authorized, current user: ', currentUser.username)
+          return { currentUser }
+        }
+      },
+    })
+  )
+
+  const PORT = 4000
+
+  httpServer.listen(PORT, () =>
+    console.log(`Server is now running on http://localhost:${PORT}`)
+  )
+}
+
+start()

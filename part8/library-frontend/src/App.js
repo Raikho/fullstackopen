@@ -26,12 +26,12 @@ const App = () => {
   const userResult = useQuery(USER_INFO)
   useSubscription(AUTHOR_ADDED, {
     onData: ({ data }) => {
-      console.log('author added subscription: ', data) // debug
+      console.log('subscription: author added: ', data) // debug
     },
   })
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      console.log('book added subscription: ', data) // debug
+      console.log('subscription: book added: ', data) // debug
     },
   })
 

@@ -4,7 +4,8 @@ const {
   ApolloServerPluginDrainHttpServer,
 } = require('@apollo/server/plugin/drainHttpServer')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
-const { startStandaloneServer } = require('@apollo/server/standalone') // todo: delete
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
 
 const express = require('express')
 const cors = require('cors')
@@ -65,18 +66,37 @@ mongoose
 const start = async () => {
   const app = express()
   const httpServer = http.createServer(app)
-  const server = new ApolloServer({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
+  })
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({ schema }, wsServer)
+
+  const gqlServer = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
+    ],
   })
 
-  await server.start()
+  await gqlServer.start()
 
   app.use(
     '/',
     cors(),
     express.json(),
-    expressMiddleware(server, {
+    expressMiddleware(gqlServer, {
       context: async ({ req, res }) => {
         console.log('authorizing...')
         const auth = req ? req.headers.authorization : null

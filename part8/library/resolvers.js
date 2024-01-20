@@ -1,5 +1,8 @@
 const { GraphQLError } = require('graphql')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
@@ -41,7 +44,10 @@ const resolvers = {
           author.save()
         }
         const book = new Book({ ...args, author: author.id })
-        return await book.save()
+        await book.save()
+
+        pubsub.publish('BOOK_ADDED', { bookAdded: book })
+        return book
       } catch (error) {
         throw new GraphQLError('Saving new book failed', {
           extensions: {
@@ -57,7 +63,7 @@ const resolvers = {
 
       const author = new Author({ ...args })
       try {
-        return author.save()
+        await author.save()
       } catch (error) {
         throw new GraphQLError('Saving new author failed', {
           extensions: {
@@ -67,6 +73,10 @@ const resolvers = {
           },
         })
       }
+
+      pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
+
+      return author
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser) authError()
@@ -118,6 +128,14 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, process.env.SECRET) }
+    },
+  },
+  Subscription: {
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterator('AUTHOR_ADDED'),
+    },
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
     },
   },
 }

@@ -1,11 +1,6 @@
 import { useState, createContext, useEffect } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from 'react-router-dom'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import './style.css'
 import Authors from './components/Authors'
@@ -16,7 +11,7 @@ import LoginForm from './components/LoginForm'
 import storage from './services/storage'
 import Nav from './components/Nav'
 import Recommend from './components/Recommend'
-import { USER_INFO } from './queries'
+import { USER_INFO, AUTHOR_ADDED, BOOK_ADDED } from './queries'
 
 export const NoteContext = createContext(null)
 const clearedUser = { name: '', username: '', favoriteGenre: '' }
@@ -27,9 +22,18 @@ const App = () => {
   const [user, setUser] = useState(clearedUser)
   const contextValues = { note, setNote, token, setToken, user, setUser }
 
-  // const navigate = useNavigate()
   const client = useApolloClient()
   const userResult = useQuery(USER_INFO)
+  useSubscription(AUTHOR_ADDED, {
+    onData: ({ data }) => {
+      console.log('author added subscription: ', data) // debug
+    },
+  })
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log('book added subscription: ', data) // debug
+    },
+  })
 
   useEffect(() => {
     const setupToken = async () => {

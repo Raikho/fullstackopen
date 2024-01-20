@@ -42,6 +42,7 @@ const resolvers = {
         if (!author) {
           author = new Author({ name: args.author })
           author.save()
+          pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
         }
         const book = new Book({ ...args, author: author.id })
         await book.save()

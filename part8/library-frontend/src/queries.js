@@ -86,3 +86,28 @@ export const USER_INFO = gql`
     }
   }
 `
+
+export const AUTHOR_ADDED = gql`
+  subscription {
+    authorAdded {
+      name
+      born
+      bookCount
+      id
+    }
+  }
+`
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      title
+      author {
+        name
+      }
+      genres
+      published
+      id
+    }
+  }
+`

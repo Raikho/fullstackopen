@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react'
 import { useMutation } from '@apollo/client'
-import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries'
+import { CREATE_BOOK } from '../queries'
 import { NoteContext } from '../App'
 import { useField, resetFields } from '../hooks'
 
@@ -13,7 +13,6 @@ const NewBook = () => {
 
   const { setNote } = useContext(NoteContext)
   const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: error =>
       setNote(error.graphQLErrors.map(e => e.message).join('\n')),
   })

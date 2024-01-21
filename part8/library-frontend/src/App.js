@@ -11,7 +11,13 @@ import LoginForm from './components/LoginForm'
 import storage from './services/storage'
 import Nav from './components/Nav'
 import Recommend from './components/Recommend'
-import { USER_INFO, AUTHOR_ADDED, BOOK_ADDED } from './queries'
+import {
+  USER_INFO,
+  AUTHOR_ADDED,
+  BOOK_ADDED,
+  ALL_BOOKS,
+  ALL_AUTHORS,
+} from './queries'
 
 export const NoteContext = createContext(null)
 const clearedUser = { name: '', username: '', favoriteGenre: '' }
@@ -25,13 +31,24 @@ const App = () => {
   const client = useApolloClient()
   const userResult = useQuery(USER_INFO)
   useSubscription(AUTHOR_ADDED, {
-    onData: ({ data }) => {
-      console.log('subscription: author added: ', data) // debug
+    onData: ({ data, client }) => {
+      const newAuthor = data.data.authorAdded
+      console.log('subscription: author added: ', newAuthor) // debug
+
+      client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        // TODO: udpate numBooks
+        return { allAuthors: allAuthors.concat(newAuthor) }
+      })
     },
   })
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      console.log('subscription: book added: ', data) // debug
+    onData: ({ data, client }) => {
+      const newBook = data.data.bookAdded
+      console.log('subscription: book added: ', newBook) // debug
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return { allBooks: allBooks.concat(newBook) }
+      })
     },
   })
 

@@ -9,20 +9,34 @@ const User = require('./models/user')
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
-    authorCount: async () => Author.collection.countDocuments(),
+    bookCount: async () => {
+      console.log('RESOLVER => bookCount') // debug
+      return Book.collection.countDocuments()
+    },
+    authorCount: async () => {
+      console.log('RESOLVER => authorCount') // debug
+      return Author.collection.countDocuments()
+    },
     allBooks: async (root, args) => {
+      console.log('RESOLVER => allBooks') // debug
       const query = Book.find({})
       if (args.author) query.find({ author: args.author })
       if (args.genre) query.find({ genres: args.genre })
 
       return query.exec()
     },
-    allAuthors: async () => Author.find({}),
-    me: async (root, args, context) => context.currentUser,
+    allAuthors: async () => {
+      console.log('RESOLVER => allAuthors') // debug
+      return Author.find({})
+    },
+    me: async (root, args, context) => {
+      console.log('RESOLVER => me') // debug
+      return context.currentUser
+    },
   },
   Author: {
     bookCount: async root => {
+      console.log('RESOLVER => bookCount (from Author)') // debug
       const books = await Book.find({})
       return books.reduce(
         (prev, b) => (b.author.equals(root.id) ? prev + 1 : prev),
@@ -31,10 +45,14 @@ const resolvers = {
     },
   },
   Book: {
-    author: async root => await Author.findById(root.author),
+    author: async root => {
+      console.log('RESOLVER => author') // debug
+      return await Author.findById(root.author)
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
+      console.log('RESOLVER => addBook') // debug
       if (!context.currentUser) authError()
 
       try {
@@ -60,6 +78,7 @@ const resolvers = {
       }
     },
     addAuthor: async (root, args, context) => {
+      console.log('RESOLVER => addAuthor') // debug
       if (!context.currentUser) authError()
 
       const author = new Author({ ...args })
@@ -80,6 +99,7 @@ const resolvers = {
       return author
     },
     editAuthor: async (root, args, context) => {
+      console.log('RESOLVER => editAuthor') // debug
       if (!context.currentUser) authError()
 
       const author = await Author.findOne({ name: args.name })
@@ -97,6 +117,7 @@ const resolvers = {
       }
     },
     createUser: async (root, args) => {
+      console.log('RESOLVER => createUser') // debug
       const username = args.username
       const favoriteGenre = args.favoriteGenre
       const name = args.name
@@ -113,6 +134,7 @@ const resolvers = {
       })
     },
     login: async (root, args) => {
+      console.log('RESOLVER => login') // debug
       const user = await User.findOne({ username: args.username })
       if (!user || args.password !== '1234') {
         throw new GraphQLError('wrong credentials', {
@@ -133,10 +155,16 @@ const resolvers = {
   },
   Subscription: {
     authorAdded: {
-      subscribe: () => pubsub.asyncIterator('AUTHOR_ADDED'),
+      subscribe: () => {
+        console.log('RESOLVER => authorAdded (subscription)') // debug
+        return pubsub.asyncIterator('AUTHOR_ADDED')
+      },
     },
     bookAdded: {
-      subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
+      subscribe: () => {
+        console.log('RESOLVER => authorAdded (subscription)') // debug
+        return pubsub.asyncIterator('BOOK_ADDED')
+      },
     },
   },
 }

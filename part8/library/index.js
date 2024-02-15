@@ -40,13 +40,15 @@ mongoose
       const author = new Author({ ...a })
       savedAuthors.push(author)
     })
-    savedAuthors.forEach(a => a.save())
 
     initialBooks.forEach(b => {
       const author = savedAuthors.find(a => a.name === b.author)
       const book = new Book({ ...b, author: author.id })
+      author.books.push(book.id)
       book.save()
     })
+
+    savedAuthors.forEach(a => a.save())
 
     const user = await User.findOne({ username: 'bob_smith' })
     if (!user) {

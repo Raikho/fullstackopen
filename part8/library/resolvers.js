@@ -37,11 +37,7 @@ const resolvers = {
   Author: {
     bookCount: async root => {
       console.log('RESOLVER => bookCount (from Author)') // debug
-      const books = await Book.find({})
-      return books.reduce(
-        (prev, b) => (b.author.equals(root.id) ? prev + 1 : prev),
-        0
-      )
+      return root.books.length
     },
   },
   Book: {
@@ -57,15 +53,17 @@ const resolvers = {
 
       try {
         let author = await Author.findOne({ name: args.author })
-        if (!author) {
-          author = new Author({ name: args.author })
-          author.save()
-          pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
-        }
-        const book = new Book({ ...args, author: author.id })
-        await book.save()
+        if (!author) author = new Author({ name: args.author })
+        // todo: do something below if if statement was true?
 
+        const book = new Book({ ...args, author: author.id })
+        author.books = author.books.concat(book.id) // ???
+
+        pubsub.publish('AUTHOR_ADDED', { authorAdded: author }) // TODO
         pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
+        await author.save() // todo
+        await book.save()
         return book
       } catch (error) {
         throw new GraphQLError('Saving new book failed', {

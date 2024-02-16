@@ -37,9 +37,11 @@ const App = () => {
       console.log('subscription: author added: ', newAuthor) // debug
 
       client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
-        // TODO: udpate numBooks
-        // TODO: why doesn't duplicate author work?
-        return { allAuthors: allAuthors.concat(newAuthor) }
+        return {
+          allAuthors: allAuthors
+            .filter(a => a.id !== newAuthor.id)
+            .concat(newAuthor),
+        }
       })
     },
     onError: err => console.log('sub error:', err),
@@ -48,7 +50,7 @@ const App = () => {
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
       const newBook = data.data.bookAdded
-      console.log('subscription: book added: ', newBook) // debug // TODO
+      console.log('subscription: book added: ', newBook) // debug
 
       client.cache.updateQuery({ query: ALL_BOOKS }, data => {
         const { allBooks } = data

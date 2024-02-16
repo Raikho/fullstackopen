@@ -61,6 +61,7 @@ const resolvers = {
 
         await author.save()
         await book.save()
+
         pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
         pubsub.publish('BOOK_ADDED', { bookAdded: book })
 

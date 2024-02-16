@@ -30,6 +30,7 @@ const App = () => {
 
   const client = useApolloClient()
   const userResult = useQuery(USER_INFO)
+
   useSubscription(AUTHOR_ADDED, {
     onData: ({ data, client }) => {
       const newAuthor = data.data.authorAdded
@@ -37,19 +38,24 @@ const App = () => {
 
       client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
         // TODO: udpate numBooks
+        // TODO: why doesn't duplicate author work?
         return { allAuthors: allAuthors.concat(newAuthor) }
       })
     },
+    onError: err => console.log('sub error:', err),
   })
+
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
       const newBook = data.data.bookAdded
+      console.log('subscription: book added: ', newBook) // debug // TODO
 
       client.cache.updateQuery({ query: ALL_BOOKS }, data => {
         const { allBooks } = data
         return { allBooks: allBooks.concat(newBook) }
       })
     },
+    onError: err => console.log('sub error:', err),
   })
 
   useEffect(() => {

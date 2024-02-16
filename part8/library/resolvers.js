@@ -46,6 +46,7 @@ const resolvers = {
       return await Author.findById(root.author)
     },
   },
+
   Mutation: {
     addBook: async (root, args, context) => {
       console.log('RESOLVER => addBook') // debug
@@ -54,16 +55,15 @@ const resolvers = {
       try {
         let author = await Author.findOne({ name: args.author })
         if (!author) author = new Author({ name: args.author })
-        // todo: do something below if if statement was true?
 
         const book = new Book({ ...args, author: author.id })
-        author.books = author.books.concat(book.id) // ???
+        author.books = author.books.concat(book.id)
 
-        pubsub.publish('AUTHOR_ADDED', { authorAdded: author }) // TODO
+        await author.save()
+        await book.save()
+        pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
         pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
-        await author.save() // todo
-        await book.save()
         return book
       } catch (error) {
         throw new GraphQLError('Saving new book failed', {
@@ -151,6 +151,7 @@ const resolvers = {
       return { value: jwt.sign(userForToken, process.env.SECRET) }
     },
   },
+
   Subscription: {
     authorAdded: {
       subscribe: () => {
@@ -160,7 +161,7 @@ const resolvers = {
     },
     bookAdded: {
       subscribe: () => {
-        console.log('RESOLVER => authorAdded (subscription)') // debug
+        console.log('RESOLVER => bookAdded (subscription)') // debug
         return pubsub.asyncIterator('BOOK_ADDED')
       },
     },

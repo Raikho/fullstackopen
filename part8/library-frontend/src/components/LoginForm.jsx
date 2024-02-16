@@ -34,10 +34,10 @@ const LoginForm = () => {
     console.log(`logging in with ${username.value}, ${password.value}`)
     login({
       variables: {
-        username: 'bob_smith', // debug
-        password: '1234', // debug
-        // username: username.value,
-        // password: password.value,
+        // username: 'bob_smith', // debug
+        // password: '1234', // debug
+        username: username.value,
+        password: password.value,
       },
     })
   }

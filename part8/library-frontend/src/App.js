@@ -36,7 +36,10 @@ const App = () => {
       const newAuthor = data.data.authorAdded
       console.log('subscription: author added: ', newAuthor) // debug
 
-      client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+      client.cache.updateQuery({ query: ALL_AUTHORS }, data => {
+        if (!data || !data.allAuthors) return
+        const { allAuthors } = data
+
         return {
           allAuthors: allAuthors
             .filter(a => a.id !== newAuthor.id)
@@ -53,7 +56,9 @@ const App = () => {
       console.log('subscription: book added: ', newBook) // debug
 
       client.cache.updateQuery({ query: ALL_BOOKS }, data => {
+        if (!data || !data.allBooks) return
         const { allBooks } = data
+
         return { allBooks: allBooks.concat(newBook) }
       })
     },

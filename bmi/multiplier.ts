@@ -5,8 +5,8 @@ interface calcValues {
 }
 
 const parseArguments = (args: string[]): calcValues => {
-  if (args.length < 4) throw new Error('Not enough arguments')
-  if (args.length < 4) throw new Error('Too many arguments')
+  if (args.length < 2) throw new Error('Not enough arguments')
+  if (args.length > 4) throw new Error('Too many arguments')
 
   const a: number = Number(process.argv[2])
   const b: number = Number(process.argv[3])

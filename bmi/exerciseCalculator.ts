@@ -1,3 +1,8 @@
+interface stats2 {
+  target: number
+  hours: number[]
+}
+
 interface Result {
   periodLength: number
   trainingDays: number
@@ -6,6 +11,15 @@ interface Result {
   ratingDescription: string
   target: number
   average: number
+}
+
+const parseArgs2 = (args: string[]): stats2 => {
+  if (args.length < 2) throw new Error('Not enough arguments')
+  if (args.length > 31) throw new Error('Too many arguments')
+
+  const target: number = Number(args[2])
+  const hours: number[] = args.slice(3, args.length).map(s => Number(s))
+  return { target, hours }
 }
 
 const calculateExercises = (hours: number[], target: number): Result => {
@@ -43,4 +57,11 @@ const calculateExercises = (hours: number[], target: number): Result => {
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+  const { target, hours } = parseArgs2(process.argv)
+  console.log(calculateExercises(hours, target))
+} catch (error: unknown) {
+  let errorMessage = 'Something went wrong: '
+  if (error instanceof Error) errorMessage += error.message
+  console.log(errorMessage)
+}

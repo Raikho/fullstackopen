@@ -28,8 +28,6 @@ const calculateBmi = (cm: number, kg: number): string => {
   else return 'Obese (class III)'
 }
 
-// console.log(calculateBmi(180, 74))
-
 try {
   const { cm, kg } = parseArgs(process.argv)
   console.log(calculateBmi(cm, kg))

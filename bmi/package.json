@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node index.ts",
     "ts-node": "ts-node",
     "calculateBmi": "ts-node bmiCalculator.ts",
     "calculateExercises": "ts-node exerciseCalculator.ts"
@@ -13,5 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.19"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
   }
 }

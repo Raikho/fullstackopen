@@ -1,7 +1,6 @@
-interface stats {
-  cm: number
-  kg: number
-}
+import { bmiStats as stats } from './utils'
+
+import { parseBmiQuery as parseQuery } from './utils'
 
 const parseArgs = (args: string[]): stats => {
   if (args.length < 2) throw new Error('Not enough arguments')
@@ -36,3 +35,19 @@ try {
   if (error instanceof Error) errorMessage += error.message
   console.log(errorMessage)
 }
+
+const calculateBmiFromQuery = (query: { height: string; weight: string }) => {
+  try {
+    console.log(query) // debug
+    const { cm, kg } = parseQuery(query)
+    const bmi = calculateBmi(cm, kg)
+
+    return { weight: kg, height: cm, bmi }
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong: '
+    if (error instanceof Error) errorMessage += error.message
+    return { error: errorMessage }
+  }
+}
+
+export default calculateBmiFromQuery

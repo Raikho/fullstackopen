@@ -38,7 +38,6 @@ try {
 
 const calculateBmiFromQuery = (query: { height: string; weight: string }) => {
   try {
-    console.log(query) // debug
     const { cm, kg } = parseQuery(query)
     const bmi = calculateBmi(cm, kg)
 

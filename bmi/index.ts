@@ -1,20 +1,15 @@
 import express from 'express'
-// import calculateBmi from './bmiCalculator'
 import calculateBmiFromQuery from './bmiCalculator'
+import { BmiReqHandler } from './utils'
+
 const app = express()
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!')
 })
 
-interface Query {
-  height: string
-  weight: string
-}
-
-app.get('/bmi', (req, res) => {
-  const { height, weight } = req.query as unknown as Query
-  const bmiMessage = calculateBmiFromQuery({ height, weight })
+app.get('/bmi', (req: BmiReqHandler, res) => {
+  const bmiMessage = calculateBmiFromQuery(req.query)
   res.send(bmiMessage)
 })
 

@@ -15,7 +15,7 @@ const parseArguments = (args: string[]): calcValues => {
   return { a, b }
 }
 
-const calculator = (a: number, b: number, op: Operation): number => {
+export const calculator = (a: number, b: number, op: Operation): number => {
   if (op === 'multiply') return a * b
   else if (op === 'add') return a + b
   else if (op === 'divide') {

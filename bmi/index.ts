@@ -9,7 +9,8 @@ app.get('/hello', (_req, res) => {
 })
 
 app.get('/bmi', (req: BmiReqHandler, res) => {
-  const bmiMessage = calculateBmiFromQuery(req.query)
+  const bmiMessage = calculateBmiFromQuery(req.query.height, req.query.weight)
+
   res.send(bmiMessage)
 })
 

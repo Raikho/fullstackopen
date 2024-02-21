@@ -1,17 +1,4 @@
-import { bmiStats as stats } from './utils'
-
-import { parseBmiQuery as parseQuery } from './utils'
-
-const parseArgs = (args: string[]): stats => {
-  if (args.length < 2) throw new Error('Not enough arguments')
-  if (args.length > 4) throw new Error('Too many arguments')
-
-  const cm: number = Number(args[2])
-  const kg: number = Number(args[3])
-  if (isNaN(cm) || isNaN(kg)) throw new Error('Arguments were not numbers!')
-
-  return { cm, kg }
-}
+import { parseBmiQuery as parseQuery, parseBmiCli as parseCli } from './utils'
 
 const calculateBmi = (cm: number, kg: number): string => {
   const bmi: number = (kg / (cm * cm)) * 100 * 100
@@ -27,18 +14,9 @@ const calculateBmi = (cm: number, kg: number): string => {
   else return 'Obese (class III)'
 }
 
-try {
-  const { cm, kg } = parseArgs(process.argv)
-  console.log(calculateBmi(cm, kg))
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong: '
-  if (error instanceof Error) errorMessage += error.message
-  console.log(errorMessage)
-}
-
-const calculateBmiFromQuery = (query: { height: string; weight: string }) => {
+const calculateBmiFromQuery = (height: string, weight: string) => {
   try {
-    const { cm, kg } = parseQuery(query)
+    const { cm, kg } = parseQuery(height, weight)
     const bmi = calculateBmi(cm, kg)
 
     return { weight: kg, height: cm, bmi }
@@ -50,3 +28,12 @@ const calculateBmiFromQuery = (query: { height: string; weight: string }) => {
 }
 
 export default calculateBmiFromQuery
+
+try {
+  const { cm, kg } = parseCli(process.argv)
+  console.log(calculateBmi(cm, kg))
+} catch (error: unknown) {
+  let errorMessage = 'Something went wrong: '
+  if (error instanceof Error) errorMessage += error.message
+  console.log(errorMessage)
+}

@@ -1,7 +1,7 @@
 import express from 'express';
 import calculateBmiFromQuery from './bmiCalculator';
 import { BmiReqHandler } from './utils';
-// import { calculator } from './multiplier';
+import { calculator } from './multiplier';
 
 const app = express();
 app.use(express.json());
@@ -16,18 +16,17 @@ app.get('/bmi', (req: BmiReqHandler, res) => {
   res.send(bmiMessage);
 });
 
-// app.post('/calculate', (req, res) => {
-//   const { value1, value2, op } = req.body;
+app.post('/calculate', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { value1, value2, op } = req.body;
 
-//   let value3: any = 1;
-//   value3 = 3;
+  if (!value1 || isNaN(Number(value1)))
+    return res.status(400).send({ error: '...' });
 
-//   let value4: any = 3;
-//   value4 = 4;
-
-//   const result = calculator(value1, value2, op);
-//   res.send({ result });
-// });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const result = calculator(Number(value1), Number(value2), op);
+  res.send({ result });
+});
 
 const PORT = 3003;
 

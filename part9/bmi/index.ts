@@ -27,6 +27,10 @@ app.post('/calculate', (req, res) => {
   return res.send({ result });
 });
 
+app.post('/exercises', (_, res) => {
+  return res.send({ msg: 'testing /exercises post endpoint' });
+});
+
 const PORT = 3003;
 
 app.listen(PORT, () => {

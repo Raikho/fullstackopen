@@ -1,0 +1,22 @@
+GET http://localhost:3003/bmi?height=220&weight=100
+
+###
+
+POST http://localhost:3003/calculate
+content-type: application/json
+
+{
+  "value1": 2,
+  "value2": 4,
+  "op": "multiply"
+}
+
+###
+POST http://localhost:3003/exercises
+content-type: application/json
+
+{
+  "value1": 2,
+  "value2": 4,
+  "op": "multiply"
+}

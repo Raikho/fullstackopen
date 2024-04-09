@@ -2,6 +2,7 @@ import express from 'express';
 import calculateBmiFromQuery from './bmiCalculator';
 import { BmiReqHandler } from './utils';
 import { calculator, Operation } from './multiplier';
+import calculateExercises from './exerciseCalculator';
 
 const app = express();
 app.use(express.json());
@@ -27,8 +28,17 @@ app.post('/calculate', (req, res) => {
   return res.send({ result });
 });
 
-app.post('/exercises', (_, res) => {
-  return res.send({ msg: 'testing /exercises post endpoint' });
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const hours = daily_exercises;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const out = calculateExercises(daily_exercises, target);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  return res.send({ hours, target, out });
 });
 
 const PORT = 3003;

@@ -57,6 +57,8 @@ const calculateExercises = (hours: number[], target: number): Result => {
   };
 };
 
+export default calculateExercises;
+
 try {
   const { target, hours } = parseExerciseArgs(process.argv);
   console.log(calculateExercises(hours, target));
